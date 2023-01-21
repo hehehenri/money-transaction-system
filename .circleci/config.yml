@@ -1,0 +1,178 @@
+version: 2.1
+
+orbs:
+  doctl: digitalocean/cli@0.1.1
+  money-transactions:
+    orbs:
+      node: circleci/node@3.0
+    commands:
+      composer-install:
+        steps:
+          - restore_cache:
+              keys:
+                - v1-dependencies-{{ checksum "composer.json" }}
+                - v1-dependencies-
+
+          - run:
+              name: Install dependencies (Composer)
+              command: composer install
+
+          - save_cache:
+              key: v1-dependencies-{{ checksum "composer.json" }}
+              paths:
+                - ./vendor
+
+jobs:
+  static-analysis:
+    docker:
+      - image: cimg/php:8.1.11
+    steps:
+      - checkout
+      - money-transactions/composer-install
+      - run:
+          name: Static Code Analysis (PHPStan)
+          command: php vendor/bin/phpstan analyse
+
+  code-style:
+    docker:
+      - image: cimg/php:8.1.11
+    steps:
+      - checkout
+      - money-transactions/composer-install
+      - run:
+          name: Code Style Linter (Pint)
+          command: php vendor/bin/pint --test
+
+  tests:
+    docker:
+      - image: cimg/php:8.1.11
+      - image: cimg/redis:6.2.6
+      - image: cimg/mysql:8.0
+        environment:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: money_transactions_test
+    steps:
+      - checkout
+      - money-transactions/composer-install
+      - run:
+          name: Waiting for MySQL and Redis
+          command: dockerize -wait tcp://localhost:3306 -wait tcp://localhost:6379 -wait tcp://localhost:7687 -timeout 1m
+      - run:
+          name: Run migrations
+          command: php artisan migrate --env testing
+      - run:
+          name: Automated Tests (PHPUnit)
+          command: |
+            mkdir -p ~/phpunit
+            php vendor/bin/phpunit --log-junit ~/phpunit/junit.xml
+      - store_test_results:
+          path: ~/phpunit
+
+  build-app-image:
+    docker:
+      - image: cimg/base:2022.03
+    steps:
+      - checkout
+      - setup_remote_docker
+      - doctl/install
+      - doctl/initialize
+      - run:
+          name: Build Docker image
+          command: |
+            doctl registry login
+
+            IMAGE_TAG=registry.digitalocean.com/money-transactions/api:${CIRCLE_SHA1}
+
+            docker build -t ${IMAGE_TAG} .
+            docker push ${IMAGE_TAG}
+
+  build-nginx-image:
+    docker:
+      - image: cimg/base:2022.03
+    steps:
+      - checkout
+      - setup_remote_docker
+      - doctl/install
+      - doctl/initialize
+      - run:
+          name: Build Docker image
+          command: |
+            doctl registry login
+
+            IMAGE_TAG=registry.digitalocean.com/money-transactions/nginx:${CIRCLE_SHA1}
+
+            docker build -t ${IMAGE_TAG} -f .setup/nginx/Dockerfile .
+            docker push ${IMAGE_TAG}
+
+  deploy:
+    docker:
+      - image: cimg/deploy:2022.09
+    steps:
+      - checkout
+      - run:
+          name: Deploy to Kubernetes
+          command: |
+            curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+
+            APP_ENV="staging"
+            VALUES_FILE=".setup/helm/${APP_ENV}-values.yaml"
+
+            echo "$KUBERNETES_CLUSTER_CERTIFICATE" | base64 --decode > cert.crt
+
+            helm upgrade -f "${VALUES_FILE}" \
+              --install \
+              --namespace "money-transactions" \
+              --set image.tag="${CIRCLE_SHA1}" \
+              --kube-apiserver=$KUBERNETES_SERVER \
+              --kube-ca-file=cert.crt \
+              --kube-token=$KUBERNETES_TOKEN \
+              "${CIRCLE_PROJECT_REPONAME}" \
+              .setup/helm
+
+workflows:
+  version: 2
+  ci:
+    jobs:
+      - static-analysis:
+          context:
+            - money-transactions-default
+      - code-style:
+          context:
+            - money-transactions-default
+      - tests:
+          context:
+            - money-transactions-default
+      - build-app-image:
+          context:
+            - money-transactions-default
+          requires:
+            - static-analysis
+            - code-style
+            - tests
+      - build-nginx-image:
+          context:
+            - money-transactions-default
+          requires:
+            - static-analysis
+            - code-style
+            - tests
+      - deploy:
+          filters:
+            branches:
+              only: staging
+          context:
+            - money-transactions-default
+            - money-transactions-staging
+          requires:
+            - build-app-image
+            - build-nginx-image
+      - deploy:
+          filters:
+            branches:
+              only: main
+          context:
+            - money-transactions-default
+            - money-transactions-staging
+          requires:
+            - build-app-image
+            - build-nginx-image
