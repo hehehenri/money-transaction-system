@@ -1,13 +1,13 @@
 name: Testing Laravel with MySQL
 on: [ push ]
 jobs:
-  lumen:
-    name: Lumen (PHP ${{ matrix.php-versions }})
+  laravel:
+    name: Laravel (PHP ${{ matrix.php-versions }})
     runs-on: ubuntu-latest
     env:
-      DB_DATABASE: lumen
+      DB_DATABASE: money-transactions
       DB_USERNAME: root
-      DB_PASSWORD: password
+      DB_PASSWORD: root
       BROADCAST_DRIVER: log
       CACHE_DRIVER: redis
       QUEUE_CONNECTION: redis
@@ -19,7 +19,7 @@ jobs:
         env:
           MYSQL_ALLOW_EMPTY_PASSWORD: false
           MYSQL_ROOT_PASSWORD: password
-          MYSQL_DATABASE: lumen
+          MYSQL_DATABASE: money-transactions
         ports:
           - 3306/tcp
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
@@ -42,7 +42,6 @@ jobs:
         with:
           php-version: ${{ matrix.php-versions }}
           extensions: mbstring, dom, fileinfo, mysql
-          coverage: xdebug
 
       # Local MySQL service in GitHub hosted environments is disabled by default.
       # If you are using it instead of service containers, make sure you start it.
@@ -85,8 +84,7 @@ jobs:
           REDIS_PORT: ${{ job.services.redis.ports['6379'] }}
 
       - name: Test with phpunit
-        run: vendor/bin/phpunit --coverage-text
+        run: vendor/bin/phpunit
         env:
           DB_PORT: ${{ job.services.mysql.ports['3306'] }}
           REDIS_PORT: ${{ job.services.redis.ports['6379'] }}
-
