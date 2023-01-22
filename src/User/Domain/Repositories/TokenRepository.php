@@ -2,10 +2,10 @@
 
 namespace Src\User\Domain\Repositories;
 
-use Src\User\Domain\Entities\AuthenticatableUser;
+use Src\User\Domain\Enums\UserType;
 use Src\User\Domain\ValueObjects\Token;
 
 interface TokenRepository
 {
-    public function getToken(AuthenticatableUser $user): ?Token;
+    public function storeToken(Token $token, UserType $userType): Token;
 }

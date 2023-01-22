@@ -3,6 +3,7 @@
 namespace Src\Customer\Presentation\Rest\ViewModels;
 
 use Src\Customer\Domain\ValueObjects\CPF;
+use Src\Customer\Presentation\Rest\Requests\RegisterRequest;
 use Src\User\Domain\Exceptions\InvalidParameterException;
 use Src\User\Domain\ValueObjects\Email;
 use Src\User\Domain\ValueObjects\FullName;
@@ -19,17 +20,18 @@ class RegisterViewModel
     }
 
     /**
-     * @param  array<string, string>  $payload
-     *
      * @throws InvalidParameterException
      */
-    public static function fromRequest(array $payload): self
+    public static function fromRequest(RegisterRequest $request): self
     {
-        $fullName = new FullName($payload['full_name']);
-        $email = new Email($payload['email']);
-        $cpf = new CPF($payload['cpf']);
-        $password = new PlainTextPassword($payload['password']);
+        /** @var array<string, string> $payload */
+        $payload = $request->validated();
 
-        return new self($fullName, $email, $cpf, $password);
+        return new self(
+            new FullName($payload['full_name']),
+            new Email($payload['email']),
+            new CPF($payload['cpf']),
+            new PlainTextPassword($payload['password'])
+        );
     }
 }

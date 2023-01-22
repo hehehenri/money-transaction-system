@@ -2,9 +2,9 @@
 
 namespace Src\Customer\Domain\UseCases;
 
-class ValidateCPF
+class CPFValidator
 {
-    public function __invoke(string $value): bool
+    public function validate(string $value): bool
     {
         $value = $this->removeNonNumericChars($value);
 
@@ -25,7 +25,7 @@ class ValidateCPF
 
     private function removeNonNumericChars(string $value): string
     {
-        return preg_replace('/[^0-9]/', '', $value);
+        return preg_replace('/[^0-9]/', '', $value) ?? '';
     }
 
     private function validateLength(string $value): bool
@@ -35,7 +35,7 @@ class ValidateCPF
 
     private function checkIfAllDigitsAreTheSame(string $value): bool
     {
-        return preg_match('/(\d)\1{10}/', $value);
+        return (bool) preg_match('/(\d)\1{10}/', $value);
     }
 
     private function validateDigits(string $value): bool

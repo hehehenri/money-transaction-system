@@ -3,7 +3,7 @@
 namespace Src\Customer\Presentation\Rest\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
-use Src\Customer\Domain\UseCases\ValidateCPF;
+use Src\Customer\Domain\UseCases\CPFValidator;
 
 final class CPFValidation implements Rule
 {
@@ -14,9 +14,13 @@ final class CPFValidation implements Rule
 
     public function passes($attribute, $value): bool
     {
-        $cpfIsValid = new ValidateCPF();
+        if (! is_string($value)) {
+            return false;
+        }
 
-        return $cpfIsValid($value);
+        $validator = new CPFValidator();
+
+        return $validator->validate($value);
     }
 
     public function message(): string

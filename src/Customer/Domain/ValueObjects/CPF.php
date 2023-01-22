@@ -3,16 +3,16 @@
 namespace Src\Customer\Domain\ValueObjects;
 
 use Src\Customer\Domain\InvalidParameterException;
-use Src\Customer\Domain\UseCases\ValidateCPF;
+use Src\Customer\Domain\UseCases\CPFValidator;
 use Src\User\Domain\ValueObjects\Document;
 
 class CPF extends Document
 {
     public function __construct(string $value)
     {
-        $isValid = new ValidateCPF();
+        $validator = new CPFValidator();
 
-        if (! $isValid($value)) {
+        if (! $validator->validate($value)) {
             InvalidParameterException::invalidCPF($value);
         }
 

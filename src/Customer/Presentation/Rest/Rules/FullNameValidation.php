@@ -15,6 +15,10 @@ final class FullNameValidation implements Rule
 
     public function passes($attribute, $value): bool
     {
+        if (! is_string($value)) {
+            return false;
+        }
+
         try {
             new FullName($value);
 

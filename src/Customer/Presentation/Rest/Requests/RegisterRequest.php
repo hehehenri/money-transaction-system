@@ -2,6 +2,7 @@
 
 namespace Src\Customer\Presentation\Rest\Requests;
 
+use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Password;
 use Src\Customer\Presentation\Rest\Rules\CPFValidation;
@@ -9,7 +10,7 @@ use Src\Customer\Presentation\Rest\Rules\FullNameValidation;
 
 final class RegisterRequest extends FormRequest
 {
-    /** @return array<string, array<string>> */
+    /** @return array<string, array<string|Rule>> */
     public function rules(): array
     {
         return [
