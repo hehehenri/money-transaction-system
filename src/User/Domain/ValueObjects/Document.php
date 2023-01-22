@@ -2,4 +2,4 @@
 
 namespace Src\User\Domain\ValueObjects;
 
-interface Document {}
+abstract class Document {}

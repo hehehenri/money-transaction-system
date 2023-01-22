@@ -1,8 +1,9 @@
 <?php
 
-namespace Src\Shared\ValueObjects;
+namespace Src\User\Domain\ValueObjects;
 
-use Src\Shared\Exceptions\InvalidParameterException;
+use Src\Shared\ValueObjects\StringValueObject;
+use Src\User\Domain\Exceptions\InvalidParameterException;
 
 class Email extends StringValueObject
 {

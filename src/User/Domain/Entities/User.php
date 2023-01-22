@@ -2,8 +2,8 @@
 
 namespace Src\User\Domain\Entities;
 
-use Src\Shared\ValueObjects\Email;
 use Src\User\Domain\ValueObjects\Document;
+use Src\User\Domain\ValueObjects\Email;
 use Src\User\Domain\ValueObjects\FullName;
 use Src\User\Domain\ValueObjects\HashedPassword;
 
