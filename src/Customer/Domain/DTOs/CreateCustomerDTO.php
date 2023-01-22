@@ -17,13 +17,16 @@ class CreateCustomerDTO
     ) {
     }
 
-    public function toArray(): array
+    /**
+     * @return array<string, string>
+     */
+    public function jsonSerialize(): array
     {
         return [
-            'full_name' => $this->fullName,
-            'email' => $this->email,
-            'cpf' => $this->cpf,
-            'password' => $this->password,
+            'full_name' => (string) $this->fullName,
+            'email' => (string) $this->email,
+            'cpf' => (string) $this->cpf,
+            'password' => (string) $this->password,
         ];
     }
 }

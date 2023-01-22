@@ -12,9 +12,9 @@ class CPF extends Document
     {
         $isValid = new ValidateCPF();
 
-        if (!$isValid($value)) {
+        if (! $isValid($value)) {
             InvalidParameterException::invalidCPF($value);
-        };
+        }
 
         parent::__construct($value);
     }

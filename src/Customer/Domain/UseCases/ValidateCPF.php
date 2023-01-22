@@ -55,7 +55,7 @@ class ValidateCPF
         $firstDigit = 0;
 
         for ($i = 0, $x = 10; $i <= 8; $i++, $x--) {
-            $firstDigit += $value[$i] * $x;
+            $firstDigit += (int) $value[$i] * $x;
         }
 
         return ($firstDigit % 11) < 2 ? 0 : 11 - ($firstDigit % 11);
@@ -66,7 +66,7 @@ class ValidateCPF
         $secondDigit = 0;
 
         for ($i = 0, $x = 11; $i <= 9; $i++, $x--) {
-            $secondDigit += $value[$i] * $x;
+            $secondDigit += (int) $value[$i] * $x;
         }
 
         return ($secondDigit % 11) < 2 ? 0 : 11 - ($secondDigit % 11);

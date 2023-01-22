@@ -19,8 +19,8 @@ class RegisterViewModel
     }
 
     /**
-     * @param array<string, array<string>> $payload
-     * @return static
+     * @param  array<string, string>  $payload
+     *
      * @throws InvalidParameterException
      */
     public static function fromRequest(array $payload): self

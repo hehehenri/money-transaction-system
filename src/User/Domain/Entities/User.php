@@ -18,4 +18,15 @@ abstract class User
         public readonly HashedPassword $password,
     ) {
     }
+
+    /** @return array<string, string> */
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => (string) $this->id,
+            'full_name' => (string) $this->fullName,
+            'document' => (string) $this->document,
+            'email' => (string) $this->email,
+        ];
+    }
 }

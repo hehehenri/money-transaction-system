@@ -12,6 +12,7 @@ final class FullNameValidation implements Rule
     {
         return new self();
     }
+
     public function passes($attribute, $value): bool
     {
         try {

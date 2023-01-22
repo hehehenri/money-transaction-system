@@ -2,13 +2,11 @@
 
 namespace Src\Customer\Presentation\Rest\Rules;
 
-
 use Illuminate\Contracts\Validation\Rule;
 use Src\Customer\Domain\UseCases\ValidateCPF;
 
 final class CPFValidation implements Rule
 {
-
     public static function validate(): self
     {
         return new self;
