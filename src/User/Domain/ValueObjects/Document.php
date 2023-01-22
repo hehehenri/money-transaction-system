@@ -2,6 +2,8 @@
 
 namespace Src\User\Domain\ValueObjects;
 
-abstract class Document
+use Src\Shared\ValueObjects\StringValueObject;
+
+abstract class Document extends StringValueObject
 {
 }
