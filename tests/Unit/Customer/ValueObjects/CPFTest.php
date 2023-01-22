@@ -25,7 +25,7 @@ class CPFTest extends TestCase
     }
 
     /** @return array<string, array<string>> */
-    private function validCPFs(): array
+    public function validCPFs(): array
     {
         return [
             'starting_with_zero' => ['04784261001'],
@@ -36,8 +36,10 @@ class CPFTest extends TestCase
         ];
     }
 
-    /** @return array<string, array<string>> */
-    private function invalidCPFs(): array
+    /**
+     * @return array<string, array<string>>
+     */
+    public function invalidCPFs(): array
     {
         return [
             'too_small' => ['1924707'],
@@ -48,7 +50,6 @@ class CPFTest extends TestCase
 
     private function removePonctuation(string $payload): string
     {
-
         return preg_replace('/[^0-9]/', '', $payload) ?? '';
     }
 }
