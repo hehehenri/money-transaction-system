@@ -3,7 +3,7 @@
 namespace Src\Customer\Domain\Entities;
 
 use Src\Shared\ValueObjects\Uuid;
-use Src\User\Domain\Entities\User;
+use Src\User\Domain\Entities\AuthenticatableUser as User;
 use Src\User\Domain\ValueObjects\Document;
 use Src\User\Domain\ValueObjects\Email;
 use Src\User\Domain\ValueObjects\FullName;
