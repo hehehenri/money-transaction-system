@@ -14,7 +14,7 @@ class EmailTest extends TestCase
         $payload = 'valid.email@example.com';
 
         $email = new Email($payload);
-        $this->assertEquals($payload, (string)$email);
+        $this->assertEquals($payload, (string) $email);
     }
 
     /** @dataProvider invalidPayloads */
@@ -26,14 +26,16 @@ class EmailTest extends TestCase
         new Email($payload);
     }
 
+    /** @return array<string, array<string>> */
     public function validPayloads(): array
     {
         return [
             'regular_email_one' => ['gustav.elijah@awal.com'],
-            'regular_email_two' => ['christopher.edwin@defjam.com']
+            'regular_email_two' => ['christopher.edwin@defjam.com'],
         ];
     }
 
+    /** @return array<string, array<string>> */
     public function invalidPayloads(): array
     {
         return [

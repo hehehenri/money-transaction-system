@@ -10,7 +10,7 @@ class Email extends StringValueObject
     /** @throws InvalidParameterException */
     public function __construct(string $value)
     {
-        if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
+        if (! filter_var($value, FILTER_VALIDATE_EMAIL)) {
             throw InvalidParameterException::invalidEmail($value);
         }
 

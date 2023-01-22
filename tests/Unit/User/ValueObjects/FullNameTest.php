@@ -24,6 +24,7 @@ class FullNameTest extends TestCase
         new FullName($invalidPayload);
     }
 
+    /** @return array<string, array<string>> */
     public function validPayloads(): array
     {
         return [
@@ -33,6 +34,7 @@ class FullNameTest extends TestCase
         ];
     }
 
+    /** @return array<string, array<string>> */
     public function invalidPayloads(): array
     {
         return [
