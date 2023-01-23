@@ -25,7 +25,7 @@ class CreateCustomerDTO
         return [
             'full_name' => (string) $this->fullName,
             'email' => (string) $this->email,
-            'cpf' => (string) $this->cpf,
+            'document' => (string) $this->cpf,
             'password' => (string) $this->password,
         ];
     }

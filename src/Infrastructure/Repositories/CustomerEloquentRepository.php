@@ -26,9 +26,9 @@ class CustomerEloquentRepository implements CustomerRepository
 
         return new Customer(
             new Uuid($customer->id),
-            new $payload->fullName,
-            new $payload->cpf,
-            new $payload->email,
+            $payload->fullName,
+            $payload->cpf,
+            $payload->email,
             new HashedPassword($customer->password),
         );
     }
@@ -42,11 +42,7 @@ class CustomerEloquentRepository implements CustomerRepository
             ->where('email', (string) $email)
             ->first();
 
-        if (! $customer) {
-            return null;
-        }
-
-        return $customer->intoEntity();
+        return $customer?->intoEntity();
     }
 
     /** @throws InvalidCustomerException */
