@@ -11,7 +11,7 @@ services:
       - ./migrations:/docker-entrypoint-initdb.d
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: money-transactions
+      MYSQL_DATABASE: customers
 
   redis:
     image: redis:7-alpine
