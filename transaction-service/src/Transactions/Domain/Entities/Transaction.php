@@ -13,9 +13,9 @@ class Transaction
     public function __construct(
         public readonly TransactionId $id,
         public readonly Receiver $receiver,
-        public readonly TransactionStatus $transactionStatus,
         public readonly Sender $sender,
         public readonly Money $amount,
+        public readonly TransactionStatus $transactionStatus,
     ) {
     }
 }

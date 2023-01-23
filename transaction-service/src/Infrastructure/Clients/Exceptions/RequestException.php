@@ -11,4 +11,14 @@ class RequestException extends Exception
     {
         return new self(sprintf('Failed to send request to URI<%s>', $uri));
     }
+
+    public static function serviceIsUnavailable(): self
+    {
+        return new self('Cannot send request to unavailable service.');
+    }
+
+    public static function invalidStatusCode(): self
+    {
+        return new self('Status code returned is invalid');
+    }
 }

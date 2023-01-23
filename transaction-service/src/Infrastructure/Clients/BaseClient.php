@@ -22,13 +22,19 @@ abstract class BaseClient
     /** @throws RequestException */
     protected function send(Method $method, URI $uri): JsonResponse
     {
+        if (! $this->circuitBreaker->isAvailable()) {
+            throw RequestException::serviceIsUnavailable();
+        }
+
         try {
             $response = $this->client->request($method->value, (string) $uri);
         } catch (GuzzleException $e) {
             $this->circuitBreaker->handleFailure();
 
-            throw new RequestException($uri);
+            throw RequestException::requestFailed($uri);
         }
+
+        $this->circuitBreaker->handleSuccess();
 
         return JsonResponse::fromResponse($response);
     }

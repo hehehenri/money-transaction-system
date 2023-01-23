@@ -2,6 +2,7 @@
 
 namespace Src\Ledger\Domain\DTOs;
 
+use Src\Shared\ValueObjects\Money;
 use Src\Transactionables\Domain\ValueObjects\TransactionableId;
 
 class LedgerOperationDTO

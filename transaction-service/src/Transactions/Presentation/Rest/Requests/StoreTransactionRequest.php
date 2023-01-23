@@ -10,9 +10,9 @@ class StoreTransactionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'sender_id' => ['required', 'uuid'],
+            'sender_provider_id' => ['required', 'uuid'],
             'sender_provider_name' => ['required', 'string'],
-            'receiver_id' => ['required', 'uuid'],
+            'receiver_provider_id' => ['required', 'uuid'],
             'receiver_provider_name' => ['required', 'string'],
             'amount' => ['int'],
         ];

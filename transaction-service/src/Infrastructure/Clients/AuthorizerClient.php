@@ -2,10 +2,10 @@
 
 namespace Src\Infrastructure\Clients;
 
-use GuzzleHttp\Client;
 use Src\Infrastructure\Clients\Enums\Method;
 use Src\Infrastructure\Clients\Exceptions\InvalidURIException;
 use Src\Infrastructure\Clients\Exceptions\RequestException;
+use Src\Infrastructure\Clients\ValueObjects\JsonResponse;
 use Src\Infrastructure\Clients\ValueObjects\URI;
 
 class AuthorizerClient extends BaseClient
@@ -14,10 +14,13 @@ class AuthorizerClient extends BaseClient
      * @throws RequestException
      * @throws InvalidURIException
      */
-    public function authorize()
+    public function authorize(): JsonResponse
     {
-        $uri = new URI(config('transactions.authorizer.uri'));
+        /** @var string $configUri */
+        $configUri = config('transactions.authorizer.uri');
 
-        $this->send(Method::GET, new URI($uri));
+        $uri = new URI($configUri);
+
+        return $this->send(Method::GET, new URI($uri));
     }
 }

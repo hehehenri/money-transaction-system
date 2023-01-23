@@ -7,6 +7,7 @@ class CircuitBreaker
     private State $state;
 
     private int $errorsCount;
+
     private int $successesCount;
 
     public function __construct()
@@ -51,14 +52,30 @@ class CircuitBreaker
         $this->state = State::OPEN;
     }
 
+    private function errorThreshold(): int
+    {
+        /** @var int $threshold */
+        $threshold = config('clients.circuit_breaker.error_threshold');
+
+        return $threshold;
+    }
+
+    private function successThreshold(): int
+    {
+        /** @var int $threshold */
+        $threshold = config('clients.circuit_breaker.success_threshold');
+
+        return $threshold;
+    }
+
     private function reachedErrorThreshold(): bool
     {
-        return $this->errorsCount >= (int) config('clients.circuit_breaker.error_threshold');
+        return $this->errorsCount >= $this->errorThreshold();
     }
 
     private function reachedSuccessThreshold(): bool
     {
-        return $this->successesCount >= (int) config('clients.circuit_breaker.success_threshold');
+        return $this->successesCount >= $this->successThreshold();
     }
 
     private function incrementErrors(): void

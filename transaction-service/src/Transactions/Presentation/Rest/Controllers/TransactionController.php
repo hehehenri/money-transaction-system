@@ -26,6 +26,6 @@ class TransactionController extends Controller
 
         $storeTransaction->handle($payload);
 
-        return response()->json(['message' => 'Your transaction was sent, and sooner will be received.'], Response::HTTP_OK);
+        return $response->json(['message' => 'Your transaction was sent, and sooner will be received.'], Response::HTTP_OK);
     }
 }

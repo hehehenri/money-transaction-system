@@ -2,10 +2,13 @@
 
 namespace Src\Transactions\Domain\Repositories;
 
-use Src\Transactions\Presentation\Rest\ViewModels\StoreTransactionViewModel;
+use Src\Transactionables\Domain\Entities\Sender;
+use Src\Transactions\Domain\DTOs\StoreTransactionDTO;
 use Src\Transactions\Domain\Entities\Transaction;
 
 interface TransactionRepository
 {
-    public function store(StoreTransactionViewModel $payload): Transaction;
+    public function store(StoreTransactionDTO $payload): Transaction;
+
+    public function getLastSenderTransactions(Sender $sender): ?Transaction;
 }

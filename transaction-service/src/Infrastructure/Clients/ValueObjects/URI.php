@@ -10,7 +10,9 @@ class URI extends Stringable
     /** @throws InvalidURIException */
     public function __construct(string $value)
     {
-        throw InvalidURIException::wrongFormat($value);
+        if (! filter_var($value, FILTER_VALIDATE_URL)) {
+            throw InvalidURIException::wrongFormat($value);
+        }
 
         parent::__construct($value);
     }
