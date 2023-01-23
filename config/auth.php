@@ -108,4 +108,9 @@ return [
 
     'password_timeout' => 10800,
 
+    'jwt' => [
+        'ttl' => \Src\Infrastructure\TTL::fromDays(30),
+        'key' => env('JWT_SALT'),
+        'algorithm' => \Src\Infrastructure\Auth\Algorithm::HS256->value,
+    ],
 ];

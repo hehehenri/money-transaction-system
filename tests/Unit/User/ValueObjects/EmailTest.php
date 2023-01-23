@@ -3,7 +3,7 @@
 namespace Tests\Unit\User\ValueObjects;
 
 use PHPUnit\Framework\TestCase;
-use Src\User\Domain\Exceptions\InvalidParameterException;
+use Src\User\Domain\Exceptions\UserValidationException;
 use Src\User\Domain\ValueObjects\Email;
 
 class EmailTest extends TestCase
@@ -22,7 +22,7 @@ class EmailTest extends TestCase
     {
         $payload = 'invalid email';
 
-        $this->expectException(InvalidParameterException::class);
+        $this->expectException(UserValidationException::class);
         new Email($payload);
     }
 

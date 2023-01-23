@@ -11,28 +11,27 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('personal_access_tokens', function (Blueprint $table) {
             $table->uuid('id')->primary();
 
-            $table->morphs('tokenable');
-            $table->string('name');
-            $table->string('token', 64)->unique();
-            $table->timestamp('last_used_at')->nullable();
-            $table->timestamp('expires_at')->nullable();
+            $table->string('tokenable_id');
+            $table->string('tokenable_type');
+            $table->string('token')->unique();
+            $table->timestamp('expires_at');
 
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
-    {
-        Schema::dropIfExists('personal_access_tokens');
-    }
+        /**
+         * Reverse the migrations.
+         *
+         * @return void
+         */
+        public function down(): void
+        {
+            Schema::dropIfExists('personal_access_tokens');
+        }
 };

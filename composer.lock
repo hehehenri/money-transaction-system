@@ -4,8 +4,61 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ba88cd933333427928bba85923418878",
+    "content-hash": "aa43bae645d7a67cc3e702f60be5d06a",
     "packages": [
+        {
+            "name": "avlima/php-cpf-cnpj-generator",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/avlima/php-cpf-cnpj-generator.git",
+                "reference": "2da524f3e7933c37314404f7a7805720d0edd298"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/avlima/php-cpf-cnpj-generator/zipball/2da524f3e7933c37314404f7a7805720d0edd298",
+                "reference": "2da524f3e7933c37314404f7a7805720d0edd298",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Avlima\\PhpCpfCnpjGenerator\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Alberto",
+                    "email": "albertovieiradelima@gmail.com",
+                    "homepage": "https://github.com/avlima",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Brazilian document generator",
+            "homepage": "https://github.com/avlima/php-cpf-cnpj-generator",
+            "keywords": [
+                "Brazilian document",
+                "Cnpj generator",
+                "Cpf generator",
+                "Create cnpj",
+                "Create cpf",
+                "Fake cnpj",
+                "Fake cpf",
+                "laravel mmenvio"
+            ],
+            "support": {
+                "issues": "https://github.com/avlima/php-cpf-cnpj-generator/issues",
+                "source": "https://github.com/avlima/php-cpf-cnpj-generator/tree/v1.0.0"
+            },
+            "time": "2022-01-13T21:58:31+00:00"
+        },
         {
             "name": "brick/math",
             "version": "0.10.2",

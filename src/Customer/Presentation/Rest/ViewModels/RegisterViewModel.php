@@ -4,7 +4,7 @@ namespace Src\Customer\Presentation\Rest\ViewModels;
 
 use Src\Customer\Domain\ValueObjects\CPF;
 use Src\Customer\Presentation\Rest\Requests\RegisterRequest;
-use Src\User\Domain\Exceptions\InvalidParameterException;
+use Src\User\Domain\Exceptions\UserValidationException;
 use Src\User\Domain\ValueObjects\Email;
 use Src\User\Domain\ValueObjects\FullName;
 use Src\User\Domain\ValueObjects\PlainTextPassword;
@@ -20,7 +20,7 @@ class RegisterViewModel
     }
 
     /**
-     * @throws InvalidParameterException
+     * @throws UserValidationException
      */
     public static function fromRequest(RegisterRequest $request): self
     {

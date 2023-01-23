@@ -3,15 +3,17 @@
 namespace Src\Infrastructure\Auth;
 
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
-use Src\Infrastructure\Auth\ValueObjects\JWTToken;
 use Src\Infrastructure\Exceptions\AuthenticationException;
+use Src\Infrastructure\TTL;
+use Src\User\Domain\DTOs\CreateTokenDTO;
 use Src\User\Domain\Entities\AuthenticatableUser;
-use Src\User\Domain\Entities\User;
 use Src\User\Domain\Enums\UserType;
+use Src\User\Domain\Exceptions\AuthenticatableRepositoryException;
+use Src\User\Domain\Exceptions\InvalidTokenException;
 use Src\User\Domain\Exceptions\InvalidUserType;
 use Src\User\Domain\Repositories\TokenRepository;
 use Src\User\Domain\ValueObjects\PlainTextPassword;
+use Src\User\Domain\ValueObjects\Token;
 
 class Authenticator
 {
@@ -19,16 +21,30 @@ class Authenticator
     {
     }
 
-    /** @throws AuthenticationException */
-    public function login(AuthenticatableUser $user, PlainTextPassword $password): JWTToken
+    /**
+     * @throws AuthenticationException
+     * @throws InvalidUserType
+     * @throws InvalidTokenException
+     * @throws AuthenticatableRepositoryException
+     * @throws InvalidUserType
+     */
+    public function login(AuthenticatableUser $user, PlainTextPassword $password): Token
     {
         $this->checkPassword($user, $password);
 
+        /** @var int $ttl */
+        $ttl = config('auth.jwt.ttl', TTL::fromDays(30));
+
         $token = JWTToken::encode(['email' => (string) $user->email]);
 
-        $this->persistToken($token, $user);
+        $dto = new CreateTokenDTO(
+            $token,
+            UserType::fromUser($user),
+            $user->id,
+            now()->addSeconds($ttl)->toDateTime()
+        );
 
-        return $token;
+        return $this->persistToken($dto);
     }
 
     /** @throws AuthenticationException */
@@ -39,15 +55,19 @@ class Authenticator
         }
     }
 
-    /** @throws AuthenticationException */
-    private function persistToken(JWTToken $token, User $user): void
+    /**
+     * @throws InvalidTokenException
+     * @throws AuthenticatableRepositoryException
+     * @throws InvalidUserType
+     */
+    private function persistToken(CreateTokenDTO $dto): Token
     {
-        try {
-            $this->tokenRepository->storeToken($token, UserType::fromUser($user));
-        } catch (InvalidUserType $e) {
-            Log::error($e->getMessage());
+        $token = $this->tokenRepository->storeToken($dto);
 
-            throw AuthenticationException::cannotLoginUserType();
-        }
+        return new Token(
+            $token->token,
+            $token->user,
+            $token->expiresAt
+        );
     }
 }

@@ -5,7 +5,7 @@ namespace Src\Customer\Application\Exceptions;
 use Exception;
 use Src\User\Domain\ValueObjects\Email;
 
-class InvalidParameterException extends Exception
+class CustomerValidationException extends Exception
 {
     public static function customerEmailNotFound(Email $email): self
     {

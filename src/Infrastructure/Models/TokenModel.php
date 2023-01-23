@@ -5,16 +5,13 @@ namespace Src\Infrastructure\Models;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
  * @property string $id
- * @property string $name,
  * @property string $token,
- * @property ?Carbon $last_used_at,
- * @property ?Carbon $expires_at,
+ * @property Carbon $expires_at,
  */
-class AccessTokensModel extends Model
+class TokenModel extends Model
 {
     use HasUuids;
 
@@ -22,15 +19,14 @@ class AccessTokensModel extends Model
 
     protected $fillable = [
         'id',
-        'tokenable',
-        'name',
         'token',
-        'last_used_at',
+        'tokenable_type',
+        'tokenable_id',
         'expires_at',
     ];
 
-    public function tokenable(): MorphTo
-    {
-        return $this->morphTo();
-    }
+    /** @var array<string, string> */
+    protected $casts = [
+        'expires_at' => 'datetime',
+    ];
 }

@@ -2,10 +2,18 @@
 
 namespace Src\User\Domain\Repositories;
 
-use Src\User\Domain\Enums\UserType;
+use Src\User\Domain\DTOs\CreateTokenDTO;
+use Src\User\Domain\Exceptions\AuthenticatableRepositoryException;
+use Src\User\Domain\Exceptions\InvalidTokenException;
+use Src\User\Domain\Exceptions\InvalidUserType;
 use Src\User\Domain\ValueObjects\Token;
 
 interface TokenRepository
 {
-    public function storeToken(Token $token, UserType $userType): Token;
+    /**
+     * @throws InvalidUserType
+     * @throws AuthenticatableRepositoryException
+     * @throws InvalidTokenException
+     */
+    public function storeToken(CreateTokenDTO $payload): Token;
 }

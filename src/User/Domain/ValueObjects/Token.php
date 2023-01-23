@@ -2,13 +2,26 @@
 
 namespace Src\User\Domain\ValueObjects;
 
-use Src\Shared\ValueObjects\StringValueObject;
+use DateTime;
+use DateTimeInterface;
+use Src\User\Domain\Entities\AuthenticatableUser;
 
-abstract class Token extends StringValueObject
+class Token
 {
-    /** @param  array<string, string>  $payload */
-    abstract public static function encode(array $payload): self;
+    public function __construct(
+        public readonly string $token,
+        public readonly AuthenticatableUser $user,
+        public readonly DateTime $expiresAt
+    ) {
+    }
 
     /** @return array<string, string> */
-    abstract public function decode(): array;
+    public function jsonSerialize(): array
+    {
+        return [
+            'token' => $this->token,
+            'type' => 'Bearer',
+            'expires_at' => $this->expiresAt->format(DateTimeInterface::RFC3339),
+        ];
+    }
 }

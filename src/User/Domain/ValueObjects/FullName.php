@@ -3,7 +3,7 @@
 namespace Src\User\Domain\ValueObjects;
 
 use Src\Shared\ValueObjects\StringValueObject;
-use Src\User\Domain\Exceptions\InvalidParameterException;
+use Src\User\Domain\Exceptions\UserValidationException;
 
 class FullName extends StringValueObject
 {
@@ -11,7 +11,7 @@ class FullName extends StringValueObject
 
     private const MAX_LEN = 150;
 
-    /** @throws InvalidParameterException */
+    /** @throws UserValidationException */
     public function __construct(string $value)
     {
         $this->validateLength($value);
@@ -20,19 +20,19 @@ class FullName extends StringValueObject
         parent::__construct($value);
     }
 
-    /** @throws InvalidParameterException */
+    /** @throws UserValidationException */
     private function validateLength(string $value): void
     {
         if (strlen($value) < self::MIN_LEN || strlen($value) > self::MAX_LEN) {
-            InvalidParameterException::fullNameLengthIsOutOfRange($value);
+            throw UserValidationException::fullNameLengthIsOutOfRange($value);
         }
     }
 
-    /** @throws InvalidParameterException */
+    /** @throws UserValidationException */
     private function validateCharacters(string $value): void
     {
         if (! preg_match("/^[a-zA-ZÀ-ÖØ-öø-ÿ' -]+$/", $value)) {
-            throw InvalidParameterException::fullNameContainsInvalidCharacters($value);
+            throw UserValidationException::fullNameContainsInvalidCharacters($value);
         }
     }
 }

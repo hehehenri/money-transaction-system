@@ -3,7 +3,7 @@
 namespace Src\Customer\Presentation\Rest\ViewModels\Auth;
 
 use Src\Customer\Presentation\Rest\Requests\LoginRequest;
-use Src\User\Domain\Exceptions\InvalidParameterException;
+use Src\User\Domain\Exceptions\UserValidationException;
 use Src\User\Domain\ValueObjects\Email;
 use Src\User\Domain\ValueObjects\PlainTextPassword;
 
@@ -15,7 +15,7 @@ class LoginViewModel
     ) {
     }
 
-    /** @throws InvalidParameterException */
+    /** @throws UserValidationException */
     public static function fromRequest(LoginRequest $request): self
     {
         /** @var array<string, string> $payload */
