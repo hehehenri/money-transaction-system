@@ -1,21 +1,34 @@
 <?php
 
-namespace Src\Transaction\Application;
+namespace Src\Transactions\Application;
 
-use Src\Transaction\Domain\Repositories\TransactionRepository;
-use Src\Transaction\Presentation\Rest\ViewModels\StoreTransactionViewModel;
+use Illuminate\Support\Facades\DB;
+use Src\Ledger\Application\LedgersLocker;
+use Src\Ledger\Application\UpdateLedger;
+use Src\Transactions\Domain\Entities\Transaction;
+use Src\Transactions\Domain\Repositories\TransactionRepository;
+use Src\Transactions\Presentation\Rest\ViewModels\StoreTransactionViewModel;
 
 class StoreTransaction
 {
     public function __construct(
         private readonly TransactionRepository $transactionRepository,
-        private readonly UpdateLedger $updateLedger,
+        private readonly LedgersLocker         $locker,
+        private readonly UpdateLedger          $updateLedger,
     ) {
     }
 
     public function handle(StoreTransactionViewModel $payload)
     {
-        $this->transactionRepository->store($payload);
-        $this->updateLedger->handle()
+        $this->createTransaction($payload);
+    }
+
+    private function createTransaction(StoreTransactionViewModel $payload): Transaction
+    {
+        DB::transaction(function () use ($payload) {
+            $this->locker->lock($payload->sender, $payload->receiver);
+
+
+        });
     }
 }

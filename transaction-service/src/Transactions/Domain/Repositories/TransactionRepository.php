@@ -1,8 +1,8 @@
 <?php
 
-namespace Src\Transaction\Domain\Repositories;
+namespace Src\Transactions\Domain\Repositories;
 
-use Src\Transaction\Presentation\Rest\ViewModels\StoreTransactionViewModel;
+use Src\Transactions\Presentation\Rest\ViewModels\StoreTransactionViewModel;
 use Src\Transactions\Domain\Entities\Transaction;
 
 interface TransactionRepository

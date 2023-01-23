@@ -1,6 +1,6 @@
 <?php
 
-namespace Src\Transaction\Presentation\Rest\Requests;
+namespace Src\Transactions\Presentation\Rest\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -10,12 +10,11 @@ class StoreTransactionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'from_id' => ['required', 'uuid'],
-            'from_type' => ['required', 'string'],
-            'to_id' => ['required', 'uuid'],
-            'to_type' => ['required', 'string'],
+            'sender_id' => ['required', 'uuid'],
+            'sender_provider_name' => ['required', 'string'],
+            'receiver_id' => ['required', 'uuid'],
+            'receiver_provider_name' => ['required', 'string'],
             'amount' => ['int'],
-            'type' => ['string']
         ];
     }
 }

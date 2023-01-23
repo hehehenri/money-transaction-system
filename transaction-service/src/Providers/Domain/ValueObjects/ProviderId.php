@@ -1,7 +1,0 @@
-<?php
-
-namespace Src\Providers\Domain\ValueObjects;
-
-use Src\Shared\ValueObjects\Uuid;
-
-final class ProviderId extends Uuid {}

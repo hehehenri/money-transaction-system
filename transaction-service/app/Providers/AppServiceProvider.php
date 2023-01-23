@@ -3,8 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Src\Transaction\Domain\Repositories\TransactionRepository;
-use Src\Transaction\Presentation\Rest\TransactionRouter;
+use Src\Transactions\Domain\Repositories\TransactionRepository;
+use Src\Transactions\Presentation\Rest\TransactionRouter;
 
 class AppServiceProvider extends ServiceProvider
 {
