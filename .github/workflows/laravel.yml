@@ -99,7 +99,7 @@ jobs:
     name: Transactions Service (Laravel - PHP ${{ matrix.php-versions }})
     runs-on: ubuntu-latest
     env:
-      DB_DATABASE: customers
+      DB_DATABASE: transactions
       DB_USERNAME: root
       DB_PASSWORD: root
       BROADCAST_DRIVER: log
@@ -113,7 +113,7 @@ jobs:
         env:
           MYSQL_ALLOW_EMPTY_PASSWORD: false
           MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: customers
+          MYSQL_DATABASE: transactions
         ports:
           - 3306/tcp
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
