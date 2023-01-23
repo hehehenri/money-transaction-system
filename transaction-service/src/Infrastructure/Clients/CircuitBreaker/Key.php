@@ -2,9 +2,10 @@
 
 namespace Src\Infrastructure\Clients\CircuitBreaker;
 
-enum State: string
+enum Key: string
 {
     case OPEN = 'open';
     case HALF_OPEN = 'half-open';
-    case CLOSED = 'closed';
+    case ERRORS = 'errors';
+    case SUCCESSES = 'successes';
 }

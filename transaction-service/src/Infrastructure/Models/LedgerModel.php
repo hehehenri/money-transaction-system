@@ -2,7 +2,9 @@
 
 namespace Src\Infrastructure\Models;
 
+use Database\Factories\LedgerFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Src\Ledger\Domain\Entities\Ledger;
 use Src\Shared\ValueObjects\Money;
@@ -11,12 +13,14 @@ use Src\Shared\ValueObjects\Money;
  * @extends Model<Ledger>
  *
  * @property TransactionableModel $transactionable
+ * @property string $transactionable_id
  * @property int $amount
  */
 class LedgerModel extends Model
 {
-    use HasUuids;
+    use HasUuids, HasFactory;
 
+    protected $table = 'ledgers';
     protected $fillable = [
         'transactionable_id',
         'amount',
@@ -35,5 +39,10 @@ class LedgerModel extends Model
             $transactionable,
             new Money($this->amount)
         );
+    }
+
+    protected static function newFactory(): LedgerFactory
+    {
+        return new LedgerFactory();
     }
 }

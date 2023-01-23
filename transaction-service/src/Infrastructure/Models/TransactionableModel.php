@@ -2,7 +2,9 @@
 
 namespace Src\Infrastructure\Models;
 
+use Database\Factories\TransactionableFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Src\Transactionables\Domain\Entities\Transactionable;
@@ -19,9 +21,12 @@ use Src\Transactionables\Domain\ValueObjects\TransactionableId;
  */
 class TransactionableModel extends Model
 {
-    use HasUuids;
+    use HasUuids, HasFactory;
 
     protected $table = 'transactionables';
+
+    /** @var bool $timestamps */
+    public $timestamps = false;
 
     protected $fillable = [
         'id',
@@ -46,5 +51,10 @@ class TransactionableModel extends Model
             new ProviderId($this->provider_id),
             Provider::from($this->provider)
         );
+    }
+
+    protected static function newFactory(): TransactionableFactory
+    {
+        return new TransactionableFactory();
     }
 }

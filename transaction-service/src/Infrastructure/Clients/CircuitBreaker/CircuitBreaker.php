@@ -2,42 +2,43 @@
 
 namespace Src\Infrastructure\Clients\CircuitBreaker;
 
+use Illuminate\Support\Facades\Cache;
+
 class CircuitBreaker
 {
-    private State $state;
-
-    private int $errorsCount;
-
-    private int $successesCount;
-
-    public function __construct()
-    {
-        $this->reset();
+    public function __construct(
+        private readonly string $service,
+        private readonly Cache $cache,
+        private readonly Config $config
+    ) {
     }
 
     public function isAvailable(): bool
     {
-        return $this->state !== State::OPEN;
+        return ! $this->isOpen();
     }
 
     public function handleFailure(): void
     {
-        match ($this->state) {
-            State::HALF_OPEN => $this->openCircuit(),
-            State::OPEN => $this->incrementErrors(),
-            State::CLOSED => function () {
-                if ($this->reachedErrorThreshold()) {
-                    $this->incrementErrors();
-                    $this->openCircuit();
-                }
-            }
-        };
+        if ($this->isHalfOpen()) {
+            $this->openCircuit();
+
+            return;
+        }
+
+        $this->incrementErrors();
+
+        if ($this->reachedErrorThreshold() && ! $this->isOpen()) {
+            $this->openCircuit();
+        }
     }
 
     public function handleSuccess(): void
     {
-        if ($this->state !== State::HALF_OPEN) {
+        if (! $this->isHalfOpen()) {
             $this->reset();
+
+            return;
         }
 
         $this->incrementSuccesses();
@@ -47,51 +48,112 @@ class CircuitBreaker
         }
     }
 
-    private function openCircuit(): void
+    private function isOpen(): bool
     {
-        $this->state = State::OPEN;
+        return (bool) $this->cache->get($this->getKey(Key::OPEN), 0);
     }
 
-    private function errorThreshold(): int
+    private function isHalfOpen(): bool
     {
-        /** @var int $threshold */
-        $threshold = config('clients.circuit_breaker.error_threshold');
+        $isHalfOpen = (bool) $this->cache->get($this->getKey(Key::HALF_OPEN), 0);
 
-        return $threshold;
+        return ! $this->isOpen() && $isHalfOpen;
     }
 
-    private function successThreshold(): int
-    {
-        /** @var int $threshold */
-        $threshold = config('clients.circuit_breaker.success_threshold');
+    private function isClose(): bool {
 
-        return $threshold;
+        if (! $this->isAvailable()) {
+            return false;
+        }
+
+        return ! $this->isHalfOpen();
     }
 
     private function reachedErrorThreshold(): bool
     {
-        return $this->errorsCount >= $this->errorThreshold();
+        $failures = $this->getErrorsCount();
+
+        return ($failures >= $this->config->errorThreshold);
     }
 
     private function reachedSuccessThreshold(): bool
     {
-        return $this->successesCount >= $this->successThreshold();
+        $successes = $this->getSuccessesCount();
+
+        return ($successes >= $this->config->successThreshold);
     }
 
     private function incrementErrors(): void
     {
-        $this->errorsCount++;
+        $key = $this->getKey(Key::ERRORS);
+
+        if (! $this->cache->get($key)) {
+            $this->cache->put($key, 1, $this->config->timeWindow);
+        }
+
+        $this->cache->increment($key);
     }
 
     private function incrementSuccesses(): void
     {
-        $this->successesCount++;
+        $key = $this->getKey(Key::SUCCESSES);
+
+        if (! $this->cache->get($key)) {
+            $this->cache->put($key, 1, $this->config->timeWindow);
+        }
+
+        $this->cache->increment($key);
     }
 
     private function reset(): void
     {
-        $this->state = State::CLOSED;
-        $this->successesCount = 0;
-        $this->errorsCount = 0;
+        foreach(Key::cases() as $key) {
+            $this->cache->delete($this->getKey($key));
+        }
+   }
+
+    private function setOpenCircuit(): void
+    {
+        $this->cache->put(
+            $this->getKey(Key::OPEN),
+            time(),
+            $this->config->errorTimeout
+        );
+    }
+
+    private function setHalfOpenCircuit(): void
+    {
+        $this->cache->put(
+            $this->getKey(Key::HALF_OPEN),
+            time(),
+            $this->config->errorTimeout + $this->config->halfOpenTimeout
+        );
+    }
+
+    private function getErrorsCount(): int
+    {
+        return (int) $this->cache->get(
+            $this->getKey(Key::ERRORS),
+            0
+        );
+    }
+
+    private function getSuccessesCount(): int
+    {
+        return (int) $this->cache->get(
+            $this->getKey(Key::SUCCESSES),
+            0
+        );
+    }
+
+    private function openCircuit(): void
+    {
+        $this->setOpenCircuit();
+        $this->setHalfOpenCircuit();
+    }
+
+    private function getKey(?Key $key): string
+    {
+        return "circuit-breaker:{$this->service}:{$key?->value}";
     }
 }

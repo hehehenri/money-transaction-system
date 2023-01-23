@@ -18,11 +18,7 @@ class TransactionController extends Controller
         StoreTransaction $storeTransaction,
         ResponseFactory $response
     ): JsonResponse {
-        try {
-            $payload = StoreTransactionViewModel::fromRequest($request);
-        } catch (InvalidTransactionableException $e) {
-            return $response->json(['error' => $e->getMessage()], Response::HTTP_FORBIDDEN);
-        }
+        $payload = StoreTransactionViewModel::fromRequest($request);
 
         $storeTransaction->handle($payload);
 
