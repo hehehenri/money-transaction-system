@@ -14,7 +14,7 @@ class StoreTransactionRequest extends FormRequest
             'sender_provider_name' => ['required', 'string'],
             'receiver_provider_id' => ['required', 'uuid'],
             'receiver_provider_name' => ['required', 'string'],
-            'amount' => ['int'],
+            'amount' => ['required', 'integer'],
         ];
     }
 }

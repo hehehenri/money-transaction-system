@@ -3,10 +3,15 @@
 namespace Src\Transactions\Presentation\Rest;
 
 use App\Providers\RouteServiceProvider;
+use Illuminate\Support\Facades\Route;
+use Src\Transactions\Presentation\Rest\Controllers\TransactionController;
 
 class TransactionRouter extends RouteServiceProvider
 {
     public function register(): void
     {
+        Route::name('transaction.')->prefix('transaction')->group(function () {
+            Route::post('/store', [TransactionController::class, 'store'])->name('store');
+        });
     }
 }

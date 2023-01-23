@@ -36,4 +36,13 @@ class Transactionable
             $this->providerId,
         );
     }
+
+    /** @return array<string, string> */
+    public function jsonSerialize(): array
+    {
+        return [
+            'provider' => $this->provider->value,
+            'provider_id' => (string) $this->providerId,
+        ];
+    }
 }

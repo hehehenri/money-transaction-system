@@ -3,27 +3,23 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Src\Infrastructure\Repositories\TransactionableEloquentRepository;
+use Src\Transactionables\Domain\Repositories\TransactionableRepository;
+use Src\Transactionables\Presentation\TransactionableRouter;
 use Src\Transactions\Presentation\Rest\TransactionRouter;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     *
-     * @return void
-     */
-    public function register()
+    public function register(): void
     {
         $this->app->register(RouteServiceProvider::class);
         $this->app->register(TransactionRouter::class);
+        $this->app->register(TransactionableRouter::class);
+
+        $this->app->bind(TransactionableRepository::class, TransactionableEloquentRepository::class);
     }
 
-    /**
-     * Bootstrap any application services.
-     *
-     * @return void
-     */
-    public function boot()
+    public function boot(): void
     {
         //
     }
