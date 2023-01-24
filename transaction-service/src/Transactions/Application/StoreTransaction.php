@@ -3,8 +3,6 @@
 namespace Src\Transactions\Application;
 
 use Illuminate\Support\Facades\DB;
-use Src\Infrastructure\Clients\Exceptions\InvalidURIException;
-use Src\Infrastructure\Clients\Exceptions\RequestException;
 use Src\Ledger\Application\BalanceChecker;
 use Src\Ledger\Application\LedgerLocker;
 use Src\Transactionables\Application\GetTransactionable;
@@ -22,9 +20,9 @@ class StoreTransaction
 {
     public function __construct(
         private readonly TransactionRepository $transactionRepository,
-        private readonly LedgerLocker          $locker,
-        private readonly BalanceChecker        $balanceChecker,
-        private readonly GetTransactionable    $getTransactionable,
+        private readonly LedgerLocker $locker,
+        private readonly BalanceChecker $balanceChecker,
+        private readonly GetTransactionable $getTransactionable,
         private readonly TransactionAuthorizer $transactionAuthorizer,
     ) {
     }

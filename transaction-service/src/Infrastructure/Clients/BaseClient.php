@@ -8,8 +8,8 @@ use Psr\Http\Message\ResponseInterface;
 use Src\Infrastructure\Clients\CircuitBreaker\CircuitBreaker;
 use Src\Infrastructure\Clients\Enums\Method;
 use Src\Infrastructure\Clients\Exceptions\RequestException;
-use Src\Infrastructure\Clients\ValueObjects\URI;
 use Src\Infrastructure\Clients\Exceptions\ResponseException;
+use Src\Infrastructure\Clients\ValueObjects\URI;
 
 abstract class BaseClient
 {
