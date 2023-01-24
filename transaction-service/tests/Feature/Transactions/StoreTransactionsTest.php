@@ -12,14 +12,13 @@ use Src\Transactionables\Domain\Entities\Transactionable;
 use Src\Transactionables\Domain\Enums\Provider;
 use Src\Transactionables\Domain\Exceptions\InvalidTransactionableException;
 use Src\Transactionables\Domain\ValueObjects\ProviderId;
-use Src\Transactionables\Domain\ValueObjects\TransactionableId;
-use Src\Transactions\Domain\Entities\Transaction;
 use Tests\TestCase;
 
 class StoreTransactionsTest extends TestCase
 {
     /**
      * @dataProvider validPayload
+     *
      * @throws InvalidTransactionableException
      */
     public function testCanStoreTransactions(TransactionableDTO $sender, TransactionableDTO $receiver, Money $money): void
@@ -78,7 +77,7 @@ class StoreTransactionsTest extends TestCase
             'sender_provider_name' => $sender->provider,
             'receiver_provider_id' => Str::uuid()->toString(),
             'receiver_provider_name' => Provider::CUSTOMERS->value,
-            'amount' => $money->value()
+            'amount' => $money->value(),
         ]);
 
         $response->assertUnprocessable()
