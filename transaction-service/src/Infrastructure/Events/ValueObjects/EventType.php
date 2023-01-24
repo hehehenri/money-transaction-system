@@ -19,7 +19,7 @@ enum EventType: string
         Carbon $processedAt,
         Carbon $createdAt,
     ): Event {
-        return match($this) {
+        return match ($this) {
             self::TRANSACTION_STORED => new TransactionStored(
                 $id,
                 $this,

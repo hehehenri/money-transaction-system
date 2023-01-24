@@ -11,6 +11,7 @@ use Src\Infrastructure\Events\ValueObjects\EventType;
 
 /**
  * @extends Model<Event>
+ *
  * @property string $id
  * @property string $type
  * @property string $payload
@@ -20,7 +21,9 @@ use Src\Infrastructure\Events\ValueObjects\EventType;
 class EventModel extends Model
 {
     public $table = 'events';
+
     public $timestamps = false;
+
     protected $fillable = [
         'id',
         'type',
@@ -32,7 +35,7 @@ class EventModel extends Model
     /** @var array<string, string> */
     protected $casts = [
         'processed_at' => 'datetime',
-        'created_at' => 'datetime'
+        'created_at' => 'datetime',
     ];
 
     /**

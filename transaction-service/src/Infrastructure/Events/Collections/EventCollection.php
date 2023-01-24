@@ -10,7 +10,7 @@ use Src\Shared\ValueObjects\Collection;
  */
 final class EventCollection extends Collection
 {
-    function type(): string
+    public function type(): string
     {
         return Event::class;
     }

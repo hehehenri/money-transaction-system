@@ -10,5 +10,6 @@ use Src\Infrastructure\Events\ValueObjects\Payloads\Payload;
 interface EventRepository
 {
     public function create(Payload $dto): Event;
+
     public function getUnprocessed(EventType $type): EventCollection;
 }

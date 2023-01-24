@@ -9,24 +9,26 @@ use Src\Shared\Exceptions\InvalidItemException;
  */
 abstract class Collection
 {
-    /** @var array<T> $items */
+    /** @var array<T> */
     private array $items = [];
 
     /**
-     * @param array<T> $items
+     * @param  array<T>  $items
+     *
      * @throws InvalidItemException
      */
     public function __construct(array $items = [])
     {
-        foreach($items as $item) {
+        foreach ($items as $item) {
             $this->put($item);
         }
     }
 
-    abstract function type(): string;
+    abstract public function type(): string;
 
     /**
-     * @param T $item
+     * @param  T  $item
+     *
      * @throws InvalidItemException
      */
     public function put($item): void
@@ -37,7 +39,7 @@ abstract class Collection
             throw InvalidItemException::invalidType($this->type(), get_class($item));
         }
 
-        $this->items[] =  $item;
+        $this->items[] = $item;
     }
 
     /** @return array<T> */
@@ -48,6 +50,6 @@ abstract class Collection
 
     public function length(): int
     {
-        return sizeof($this->items);
+        return count($this->items);
     }
 }
