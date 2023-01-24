@@ -19,7 +19,7 @@ class GetTransactionable
     {
         $transactionable = $this->repository->get($providerId, $provider);
 
-        if (!$transactionable) {
+        if (! $transactionable) {
             throw TransactionableNotFoundException::providerInformation($providerId, $provider);
         }
 

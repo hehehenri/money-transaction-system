@@ -3,7 +3,6 @@
 namespace Src\Transactions\Application;
 
 use Illuminate\Support\Facades\DB;
-use Src\Infrastructure\Clients\AuthorizerClient;
 use Src\Ledger\Application\BalanceChecker;
 use Src\Ledger\Application\LedgerLocker;
 use Src\Transactionables\Application\GetTransactionable;
@@ -19,6 +18,7 @@ class StoreTransaction
 {
     public function __construct(
         private readonly TransactionRepository $transactionRepository,
+        private readonly RevertTransaction $revertTransaction,
         private readonly LedgerLocker $locker,
         private readonly BalanceChecker $balanceChecker,
         private readonly GetTransactionable $getTransactionable,
@@ -44,8 +44,8 @@ class StoreTransaction
 
         $transaction = $this->createTransaction($payload);
 
-        if (!$this->authorizeTransaction($transaction)) {
-            $this->
+        if (! $this->authorizeTransaction->handle($transaction)) {
+            $this->revertTransaction->handle();
         }
 
         return $transaction;
@@ -78,10 +78,7 @@ class StoreTransaction
 
             return $this->transactionRepository->store($dto);
         });
-    }
 
-    private function authorizeTransaction(Transaction $transaction): bool
-    {
-
+        return $transaction;
     }
 }

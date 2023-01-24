@@ -12,11 +12,8 @@ use Src\Infrastructure\Clients\ValueObjects\URI;
 
 abstract class BaseClient
 {
-    protected CircuitBreaker $circuitBreaker;
-
-    public function __construct(private readonly Client $client)
+    public function __construct(private readonly Client $client, protected readonly CircuitBreaker $circuitBreaker)
     {
-        $this->circuitBreaker = new CircuitBreaker();
     }
 
     /** @throws RequestException */

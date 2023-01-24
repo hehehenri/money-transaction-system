@@ -15,7 +15,7 @@ class RegisterTransactionableTest extends TestCase
     {
         $response = $this->request([
             'provider_id' => $uuid,
-            'provider' => $provider
+            'provider' => $provider,
         ]);
 
         $response->assertCreated()
@@ -31,7 +31,7 @@ class RegisterTransactionableTest extends TestCase
     {
         $payloads = [];
 
-        foreach(Provider::cases() as $case) {
+        foreach (Provider::cases() as $case) {
             $payloads[$case->value] = [$case->value, Str::uuid()->toString()];
         }
 

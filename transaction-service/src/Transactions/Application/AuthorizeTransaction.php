@@ -19,8 +19,8 @@ class AuthorizeTransaction
      */
     public function handle(Transaction $transaction): bool
     {
-        dd($this->client->authorize($transaction));
+        $this->client->authorize();
 
-        return true;
+        return false;
     }
 }

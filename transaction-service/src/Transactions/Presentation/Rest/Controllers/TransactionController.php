@@ -5,7 +5,6 @@ namespace Src\Transactions\Presentation\Rest\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\JsonResponse;
-use Src\Transactionables\Domain\Exceptions\InvalidTransactionableException;
 use Src\Transactions\Application\StoreTransaction;
 use Src\Transactions\Presentation\Rest\Requests\StoreTransactionRequest as Request;
 use Src\Transactions\Presentation\Rest\ViewModels\StoreTransactionViewModel;

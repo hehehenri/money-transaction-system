@@ -2,9 +2,7 @@
 
 namespace Src\Infrastructure\Models;
 
-use Database\Factories\TransactionableFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Src\Shared\ValueObjects\Money;
 use Src\Transactionables\Domain\Exceptions\InvalidTransactionableException;

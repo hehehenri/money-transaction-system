@@ -3,7 +3,6 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Src\Infrastructure\Models\TransactionableModel;
 use Src\Transactionables\Domain\Enums\Provider;
 

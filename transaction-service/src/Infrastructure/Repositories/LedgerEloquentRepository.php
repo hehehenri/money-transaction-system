@@ -3,8 +3,6 @@
 namespace Src\Infrastructure\Repositories;
 
 use Src\Infrastructure\Models\LedgerModel;
-use Src\Ledger\Domain\DTOs\LedgerOperationDTO;
-use Src\Ledger\Domain\Entities\Ledger;
 use Src\Ledger\Domain\Repository\LedgerRepository;
 use Src\Transactionables\Domain\ValueObjects\TransactionableId;
 

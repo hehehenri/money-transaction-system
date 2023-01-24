@@ -25,7 +25,7 @@ class TransactionableModel extends Model
 
     protected $table = 'transactionables';
 
-    /** @var bool $timestamps */
+    /** @var bool */
     public $timestamps = false;
 
     protected $fillable = [

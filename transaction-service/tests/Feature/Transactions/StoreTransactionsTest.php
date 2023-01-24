@@ -53,12 +53,12 @@ class StoreTransactionsTest extends TestCase
             'from_customer_to_shopkeeper' => [
                 new TransactionableDTO(new ProviderId(Str::uuid()->toString()), Provider::CUSTOMERS),
                 new TransactionableDTO(new ProviderId(Str::uuid()->toString()), Provider::SHOPKEEPERS),
-                new Money(15000)
+                new Money(15000),
             ],
             'from_customer_to_customer' => [
                 new TransactionableDTO(new ProviderId(Str::uuid()->toString()), Provider::CUSTOMERS),
                 new TransactionableDTO(new ProviderId(Str::uuid()->toString()), Provider::CUSTOMERS),
-                new Money(20000)
+                new Money(20000),
             ],
         ];
     }
@@ -94,7 +94,7 @@ class StoreTransactionsTest extends TestCase
     {
         LedgerModel::factory([
             'transactionable_id' => $transactionable->id,
-            'amount' => $money->value()
+            'amount' => $money->value(),
         ])->create();
     }
 }

@@ -3,7 +3,6 @@
 namespace Src\Ledger\Application;
 
 use Src\Ledger\Domain\Repository\LedgerRepository;
-use Src\Transactionables\Domain\Entities\Sender;
 use Src\Transactionables\Domain\Entities\Transactionable;
 
 class LedgerLocker

@@ -3,7 +3,6 @@
 namespace Src\Infrastructure\Repositories;
 
 use Src\Infrastructure\Models\TransactionModel;
-use Src\Transactionables\Domain\Entities\Sender;
 use Src\Transactionables\Domain\Exceptions\InvalidTransactionableException;
 use Src\Transactions\Domain\DTOs\StoreTransactionDTO;
 use Src\Transactions\Domain\Entities\Transaction;
@@ -24,10 +23,5 @@ class TransactionEloquentRepository implements TransactionRepository
             ->create($payload->jsonSerialize());
 
         return $transaction->intoEntity();
-    }
-
-    public function getLastSenderTransactions(Sender $sender): ?Transaction
-    {
-        // TODO: Implement getLastSenderTransactions() method.
     }
 }

@@ -60,27 +60,18 @@ class CircuitBreaker
         return ! $this->isOpen() && $isHalfOpen;
     }
 
-    private function isClose(): bool {
-
-        if (! $this->isAvailable()) {
-            return false;
-        }
-
-        return ! $this->isHalfOpen();
-    }
-
     private function reachedErrorThreshold(): bool
     {
         $failures = $this->getErrorsCount();
 
-        return ($failures >= $this->config->errorThreshold);
+        return $failures >= $this->config->errorThreshold;
     }
 
     private function reachedSuccessThreshold(): bool
     {
         $successes = $this->getSuccessesCount();
 
-        return ($successes >= $this->config->successThreshold);
+        return $successes >= $this->config->successThreshold;
     }
 
     private function incrementErrors(): void
@@ -88,7 +79,7 @@ class CircuitBreaker
         $key = $this->getKey(Key::ERRORS);
 
         if (! $this->cache->get($key)) {
-            $this->cache->put($key, 1, $this->config->timeWindow);
+            $this->cache->put($key, 1, $this->config->timeoutWindow);
         }
 
         $this->cache->increment($key);
@@ -99,7 +90,7 @@ class CircuitBreaker
         $key = $this->getKey(Key::SUCCESSES);
 
         if (! $this->cache->get($key)) {
-            $this->cache->put($key, 1, $this->config->timeWindow);
+            $this->cache->put($key, 1, $this->config->timeoutWindow);
         }
 
         $this->cache->increment($key);
@@ -107,10 +98,10 @@ class CircuitBreaker
 
     private function reset(): void
     {
-        foreach(Key::cases() as $key) {
+        foreach (Key::cases() as $key) {
             $this->cache->delete($this->getKey($key));
         }
-   }
+    }
 
     private function setOpenCircuit(): void
     {

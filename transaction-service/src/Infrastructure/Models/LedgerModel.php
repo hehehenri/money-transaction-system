@@ -21,6 +21,7 @@ class LedgerModel extends Model
     use HasUuids, HasFactory;
 
     protected $table = 'ledgers';
+
     protected $fillable = [
         'transactionable_id',
         'amount',

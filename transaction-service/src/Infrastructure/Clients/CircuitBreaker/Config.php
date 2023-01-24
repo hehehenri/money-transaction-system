@@ -5,15 +5,18 @@ namespace Src\Infrastructure\Clients\CircuitBreaker;
 class Config
 {
     public readonly int $errorThreshold;
-    public readonly int $successThreshold;
-    public readonly int $timeoutWindow;
-    public readonly int $halfOpenTimeout;
-    public readonly int $errorTimeout;
 
+    public readonly int $successThreshold;
+
+    public readonly int $timeoutWindow;
+
+    public readonly int $halfOpenTimeout;
+
+    public readonly int $errorTimeout;
 
     public function __construct()
     {
-        /** @var array<string, string> $config */
+        /** @var array<string, int> $config */
         $config = config('infrastructure.circuit_breaker');
 
         $this->errorThreshold = $config['error_threshold'];

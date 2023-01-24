@@ -7,5 +7,5 @@ return [
         'error_timeout' => 300,
         'half_open_timeout' => 150,
         'success_threshold' => 1,
-    ]
+    ],
 ];
