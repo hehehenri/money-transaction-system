@@ -13,9 +13,12 @@ use Src\Transactionables\Domain\Enums\Provider;
 use Src\Transactionables\Domain\Exceptions\InvalidTransactionableException;
 use Src\Transactionables\Domain\ValueObjects\ProviderId;
 use Tests\TestCase;
+use Tests\Traits\MocksAuthorizer;
 
 class StoreTransactionsTest extends TestCase
 {
+    use MocksAuthorizer;
+
     /**
      * @dataProvider validPayload
      *
@@ -23,6 +26,8 @@ class StoreTransactionsTest extends TestCase
      */
     public function testCanStoreTransactions(TransactionableDTO $sender, TransactionableDTO $receiver, Money $money): void
     {
+        $this->authorize();
+
         /** @var TransactionableModel $senderModel */
         $senderModel = TransactionableModel::factory($sender->jsonSerialize())->create();
         /** @var TransactionableModel $receiverModel */
@@ -44,12 +49,10 @@ class StoreTransactionsTest extends TestCase
         $response->assertOk();
     }
 
-    public function testTransactionIsRefusedWhenValidatorIsOffline()
-    {
-    }
-
     public function testTransactionableMustExist(): void
     {
+        $this->authorize();
+
         $response = $this->route([
             'sender_provider_id' => Str::uuid()->toString(),
             'sender_provider_name' => Provider::CUSTOMERS->value,
@@ -64,6 +67,8 @@ class StoreTransactionsTest extends TestCase
 
     public function testShopkeepersCantSendTransactions(): void
     {
+        $this->authorize();
+
         $sender = new TransactionableDTO(
             new ProviderId(Str::uuid()->toString()),
             Provider::SHOPKEEPERS
