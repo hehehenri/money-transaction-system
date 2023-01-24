@@ -8,19 +8,20 @@ use Src\Infrastructure\Models\LedgerModel;
 use Src\Infrastructure\Models\TransactionableModel;
 use Src\Shared\ValueObjects\Money;
 use Src\Transactionables\Domain\DTOs\TransactionableDTO;
-use Src\Transactionables\Domain\Entities\Receiver;
-use Src\Transactionables\Domain\Entities\Sender;
 use Src\Transactionables\Domain\Entities\Transactionable;
 use Src\Transactionables\Domain\Enums\Provider;
 use Src\Transactionables\Domain\Exceptions\InvalidTransactionableException;
 use Src\Transactionables\Domain\ValueObjects\ProviderId;
-use Src\Transactionables\Domain\ValueObjects\ReceiverId;
-use Src\Transactionables\Domain\ValueObjects\SenderId;
+use Src\Transactionables\Domain\ValueObjects\TransactionableId;
+use Src\Transactions\Domain\Entities\Transaction;
 use Tests\TestCase;
 
 class StoreTransactionsTest extends TestCase
 {
-    /** @dataProvider validPayload */
+    /**
+     * @dataProvider validPayload
+     * @throws InvalidTransactionableException
+     */
     public function testCanStoreTransactions(TransactionableDTO $sender, TransactionableDTO $receiver, Money $money): void
     {
         /** @var TransactionableModel $senderModel */
@@ -44,6 +45,46 @@ class StoreTransactionsTest extends TestCase
         $response->assertOk();
     }
 
+    public function testTransactionableMustExist(): void
+    {
+        $response = $this->route([
+            'sender_provider_id' => Str::uuid()->toString(),
+            'sender_provider_name' => Provider::CUSTOMERS->value,
+            'receiver_provider_id' => Str::uuid()->toString(),
+            'receiver_provider_name' => Provider::SHOPKEEPERS->value,
+            'amount' => 15000,
+        ]);
+
+        $response->assertUnprocessable()
+            ->assertSee('not found');
+    }
+
+    public function testShopkeepersCantSendTransactions(): void
+    {
+        $sender = new TransactionableDTO(
+            new ProviderId(Str::uuid()->toString()),
+            Provider::SHOPKEEPERS
+        );
+
+        /** @var TransactionableModel $sender */
+        $sender = TransactionableModel::factory($sender->jsonSerialize())->create();
+
+        $money = new Money(15000);
+
+        $this->giveMoney($sender->intoEntity(), $money);
+
+        $response = $this->route([
+            'sender_provider_id' => $sender->provider_id,
+            'sender_provider_name' => $sender->provider,
+            'receiver_provider_id' => Str::uuid()->toString(),
+            'receiver_provider_name' => Provider::CUSTOMERS->value,
+            'amount' => $money->value()
+        ]);
+
+        $response->assertUnprocessable()
+            ->assertSee('cannot send transactions');
+    }
+
     /**
      * @return array<string, array<TransactionableDTO|Money>>
      */
@@ -61,27 +102,6 @@ class StoreTransactionsTest extends TestCase
                 new Money(20000),
             ],
         ];
-    }
-
-    /**
-     * @throws InvalidTransactionableException
-     */
-    private function getSender(Provider $provider): Sender
-    {
-        return new Sender(
-            new SenderId(Str::uuid()->toString()),
-            $provider,
-            new ProviderId(Str::uuid()->toString())
-        );
-    }
-
-    private function getReceiver(Provider $provider): Receiver
-    {
-        return new Receiver(
-            new ReceiverId(Str::uuid()->toString()),
-            $provider,
-            new ProviderId(Str::uuid()->toString())
-        );
     }
 
     /** @param  array<string, string>  $payload */

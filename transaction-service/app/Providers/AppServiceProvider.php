@@ -3,8 +3,10 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Src\Infrastructure\Repositories\LedgerEloquentRepository;
 use Src\Infrastructure\Repositories\TransactionableEloquentRepository;
 use Src\Infrastructure\Repositories\TransactionEloquentRepository;
+use Src\Ledger\Domain\Repository\LedgerRepository;
 use Src\Transactionables\Domain\Repositories\TransactionableRepository;
 use Src\Transactionables\Presentation\TransactionableRouter;
 use Src\Transactions\Domain\Repositories\TransactionRepository;
@@ -20,6 +22,7 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->bind(TransactionableRepository::class, TransactionableEloquentRepository::class);
         $this->app->bind(TransactionRepository::class, TransactionEloquentRepository::class);
+        $this->app->bind(LedgerRepository::class, LedgerEloquentRepository::class);
     }
 
     public function boot(): void

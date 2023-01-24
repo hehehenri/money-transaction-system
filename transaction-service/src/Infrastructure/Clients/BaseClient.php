@@ -13,8 +13,12 @@ use Src\Infrastructure\Clients\ValueObjects\URI;
 
 abstract class BaseClient
 {
-    public function __construct(private readonly Client $client, protected readonly CircuitBreaker $circuitBreaker)
-    {
+    private CircuitBreaker $circuitBreaker;
+
+    public function __construct(
+        private readonly Client $client,
+    ) {
+        $this->circuitBreaker = new CircuitBreaker(get_class($this));
     }
 
     /**

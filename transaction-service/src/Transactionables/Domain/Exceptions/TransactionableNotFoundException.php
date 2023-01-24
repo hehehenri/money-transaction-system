@@ -13,7 +13,7 @@ class TransactionableNotFoundException extends Exception
         Provider $provider
     ): self {
         return new self(sprintf(
-            'Transaction from provider<%s> and id<%s>',
+            'Transaction from provider<%s> and id<%s> was not found.',
             $provider->value,
             $providerId
         ));

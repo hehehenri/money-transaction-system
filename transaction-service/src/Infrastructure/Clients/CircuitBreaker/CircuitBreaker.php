@@ -6,11 +6,12 @@ use Illuminate\Support\Facades\Cache;
 
 class CircuitBreaker
 {
+    private Config $config;
+
     public function __construct(
         private readonly string $service,
-        private readonly Cache $cache,
-        private readonly Config $config
     ) {
+        $this->config = new Config();
     }
 
     public function isAvailable(): bool
@@ -50,12 +51,12 @@ class CircuitBreaker
 
     private function isOpen(): bool
     {
-        return (bool) $this->cache->get($this->getKey(Key::OPEN), 0);
+        return (bool) Cache::get($this->getKey(Key::OPEN), 0);
     }
 
     private function isHalfOpen(): bool
     {
-        $isHalfOpen = (bool) $this->cache->get($this->getKey(Key::HALF_OPEN), 0);
+        $isHalfOpen = (bool) Cache::get($this->getKey(Key::HALF_OPEN), 0);
 
         return ! $this->isOpen() && $isHalfOpen;
     }
@@ -78,34 +79,34 @@ class CircuitBreaker
     {
         $key = $this->getKey(Key::ERRORS);
 
-        if (! $this->cache->get($key)) {
-            $this->cache->put($key, 1, $this->config->timeoutWindow);
+        if (! Cache::get($key)) {
+            Cache::put($key, 1, $this->config->timeoutWindow);
         }
 
-        $this->cache->increment($key);
+        Cache::increment($key);
     }
 
     private function incrementSuccesses(): void
     {
         $key = $this->getKey(Key::SUCCESSES);
 
-        if (! $this->cache->get($key)) {
-            $this->cache->put($key, 1, $this->config->timeoutWindow);
+        if (! Cache::get($key)) {
+            Cache::put($key, 1, $this->config->timeoutWindow);
         }
 
-        $this->cache->increment($key);
+        Cache::increment($key);
     }
 
     private function reset(): void
     {
         foreach (Key::cases() as $key) {
-            $this->cache->delete($this->getKey($key));
+            Cache::delete($this->getKey($key));
         }
     }
 
     private function setOpenCircuit(): void
     {
-        $this->cache->put(
+        Cache::put(
             $this->getKey(Key::OPEN),
             time(),
             $this->config->errorTimeout
@@ -114,7 +115,7 @@ class CircuitBreaker
 
     private function setHalfOpenCircuit(): void
     {
-        $this->cache->put(
+        Cache::put(
             $this->getKey(Key::HALF_OPEN),
             time(),
             $this->config->errorTimeout + $this->config->halfOpenTimeout
@@ -123,7 +124,7 @@ class CircuitBreaker
 
     private function getErrorsCount(): int
     {
-        return (int) $this->cache->get(
+        return (int) Cache::get(
             $this->getKey(Key::ERRORS),
             0
         );
@@ -131,7 +132,7 @@ class CircuitBreaker
 
     private function getSuccessesCount(): int
     {
-        return (int) $this->cache->get(
+        return (int) Cache::get(
             $this->getKey(Key::SUCCESSES),
             0
         );
