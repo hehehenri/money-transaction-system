@@ -5,14 +5,14 @@ namespace Src\Transactions\Application;
 use Src\Infrastructure\Clients\Exceptions\InvalidURIException;
 use Src\Infrastructure\Clients\Exceptions\RequestException;
 use Src\Infrastructure\Clients\Exceptions\ResponseException;
-use Src\Infrastructure\Clients\TransactionAuthorizer\Client;
+use Src\Infrastructure\Clients\TransactionAuthorizer\TransactionAuthorizerClient;
 use Src\Transactions\Domain\Entities\Transaction;
 
 class TransactionAuthorizer
 {
     public function __construct(
-        private readonly Client $client,
-        private readonly UpdateTransactionStatus $updateTransactionStatus
+        private readonly TransactionAuthorizerClient $client,
+        private readonly UpdateTransactionStatus     $updateTransactionStatus
     ) {
     }
 
@@ -21,7 +21,7 @@ class TransactionAuthorizer
         try {
             $this->client->authorize();
         } catch (ResponseException|InvalidURIException|RequestException) {
-            $this->updateTransactionStatus->revertTransaction($transaction);
+            $this->updateTransactionStatus->refusesTransaction($transaction);
 
             return false;
         }

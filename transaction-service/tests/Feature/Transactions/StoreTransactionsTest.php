@@ -44,6 +44,11 @@ class StoreTransactionsTest extends TestCase
         $response->assertOk();
     }
 
+    public function testTransactionIsRefusedWhenValidatorIsOffline()
+    {
+
+    }
+
     public function testTransactionableMustExist(): void
     {
         $response = $this->route([

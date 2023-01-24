@@ -12,7 +12,7 @@ class UpdateTransactionStatus
     {
     }
 
-    public function revertTransaction(Transaction $transaction): void
+    public function refusesTransaction(Transaction $transaction): void
     {
         $this->repository->updateStatus($transaction, TransactionStatus::REFUSED);
     }

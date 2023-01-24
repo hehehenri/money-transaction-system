@@ -2,7 +2,9 @@
 
 namespace Src\Infrastructure\Models;
 
+use Database\Factories\TransactionFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Src\Shared\ValueObjects\Money;
 use Src\Transactionables\Domain\Exceptions\InvalidTransactionableException;
@@ -23,7 +25,7 @@ use Src\Transactions\Domain\ValueObjects\TransactionId;
  */
 class TransactionModel extends Model
 {
-    use HasUuids;
+    use HasUuids, HasFactory;
 
     protected $table = 'transactions';
 
@@ -61,5 +63,10 @@ class TransactionModel extends Model
             new Money($this->amount),
             $this->status,
         );
+    }
+
+    protected static function newFactory(): TransactionFactory
+    {
+        return new TransactionFactory();
     }
 }

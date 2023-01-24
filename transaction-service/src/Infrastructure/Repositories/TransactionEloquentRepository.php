@@ -30,7 +30,7 @@ class TransactionEloquentRepository implements TransactionRepository
     {
         $this->model
             ->query()
-            ->whereKey($transaciton->id)
+            ->where('id', $transaciton->id)
             ->update(['status' => $status->value]);
     }
 }
