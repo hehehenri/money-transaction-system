@@ -12,7 +12,7 @@ class TransactionAuthorizer
 {
     public function __construct(
         private readonly TransactionAuthorizerClient $client,
-        private readonly UpdateTransactionStatus     $updateTransactionStatus
+        private readonly UpdateTransactionStatus $updateTransactionStatus
     ) {
     }
 

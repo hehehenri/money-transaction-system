@@ -2,8 +2,6 @@
 
 namespace Tests\Feature\Transactions;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Src\Infrastructure\Clients\Exceptions\ResponseException;
 use Src\Infrastructure\Models\TransactionModel;
 use Src\Transactions\Application\TransactionAuthorizer;
 use Src\Transactions\Domain\Enums\TransactionStatus;

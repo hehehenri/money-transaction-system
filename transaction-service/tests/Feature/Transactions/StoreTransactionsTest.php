@@ -46,7 +46,6 @@ class StoreTransactionsTest extends TestCase
 
     public function testTransactionIsRefusedWhenValidatorIsOffline()
     {
-
     }
 
     public function testTransactionableMustExist(): void

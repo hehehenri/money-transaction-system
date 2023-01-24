@@ -7,8 +7,6 @@ use GuzzleHttp\Psr7\Response;
 use Illuminate\Foundation\Testing\Concerns\InteractsWithContainer;
 use Illuminate\Support\Facades\Config;
 use Mockery;
-use Src\Infrastructure\Clients\BaseClient;
-use Src\Transactions\Domain\Entities\Transaction;
 use Symfony\Component\HttpFoundation\Response as HttpResponse;
 
 trait MocksAuthorizer
