@@ -6,6 +6,7 @@ use Src\Infrastructure\Models\TransactionModel;
 use Src\Transactionables\Domain\Exceptions\InvalidTransactionableException;
 use Src\Transactions\Domain\DTOs\StoreTransactionDTO;
 use Src\Transactions\Domain\Entities\Transaction;
+use Src\Transactions\Domain\Enums\TransactionStatus;
 use Src\Transactions\Domain\Repositories\TransactionRepository;
 
 class TransactionEloquentRepository implements TransactionRepository
@@ -23,5 +24,13 @@ class TransactionEloquentRepository implements TransactionRepository
             ->create($payload->jsonSerialize());
 
         return $transaction->intoEntity();
+    }
+
+    public function updateStatus(Transaction $transaciton, TransactionStatus $status): void
+    {
+        $this->model
+            ->query()
+            ->whereKey($transaciton->id)
+            ->update(['status' => $status->value]);
     }
 }

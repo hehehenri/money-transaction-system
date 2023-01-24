@@ -3,9 +3,13 @@
 namespace Src\Transactions\Application;
 
 use Illuminate\Support\Facades\DB;
+use Src\Infrastructure\Clients\Exceptions\InvalidURIException;
+use Src\Infrastructure\Clients\Exceptions\RequestException;
 use Src\Ledger\Application\BalanceChecker;
 use Src\Ledger\Application\LedgerLocker;
 use Src\Transactionables\Application\GetTransactionable;
+use Src\Transactionables\Domain\Entities\Receiver;
+use Src\Transactionables\Domain\Entities\Sender;
 use Src\Transactionables\Domain\Exceptions\InvalidTransactionableException;
 use Src\Transactionables\Domain\Exceptions\TransactionableNotFoundException;
 use Src\Transactions\Application\Exceptions\InvalidTransaction;
@@ -18,11 +22,10 @@ class StoreTransaction
 {
     public function __construct(
         private readonly TransactionRepository $transactionRepository,
-        private readonly RevertTransaction $revertTransaction,
-        private readonly LedgerLocker $locker,
-        private readonly BalanceChecker $balanceChecker,
-        private readonly GetTransactionable $getTransactionable,
-        private readonly AuthorizeTransaction $authorizeTransaction,
+        private readonly LedgerLocker          $locker,
+        private readonly BalanceChecker        $balanceChecker,
+        private readonly GetTransactionable    $getTransactionable,
+        private readonly TransactionAuthorizer $transactionAuthorizer,
     ) {
     }
 
@@ -32,38 +35,23 @@ class StoreTransaction
      */
     public function handle(StoreTransactionViewModel $payload): Transaction
     {
-        // Problems with this approach:
-        // - If the transaction was commited, but not yet authorized and the
-        //   system goes down, we cannot revert it, since it doesn't have a
-        //   status or something, that we can check for, as an inconcistence
-        //   indicator.
+        $sender = $this->getTransactionable->handle($payload->senderProviderId, $payload->senderProvider)
+            ->asSender();
+        $receiver = $this->getTransactionable->handle($payload->receiverProviderId, $payload->receiverProvider)
+            ->asReceiver();
 
-        // Future enhancements:
-        // - As I said before, adding a status, and marking it after the whole
-        //   operation completion should solve the problem.
+        $transaction = $this->createTransaction($payload, $sender, $receiver);
 
-        $transaction = $this->createTransaction($payload);
-
-        if (! $this->authorizeTransaction->handle($transaction)) {
-            $this->revertTransaction->handle();
-        }
+        $this->transactionAuthorizer->handle($transaction);
 
         return $transaction;
     }
 
-    /**
-     * @throws InvalidTransactionableException
-     * @throws TransactionableNotFoundException
-     */
-    private function createTransaction(StoreTransactionViewModel $payload): Transaction
-    {
-        $sender = $this->getTransactionable
-            ->handle($payload->senderProviderId, $payload->senderProvider)
-            ->asSender();
-        $receiver = $this->getTransactionable
-            ->handle($payload->receiverProviderId, $payload->receiverProvider)
-            ->asReceiver();
-
+    private function createTransaction(
+        StoreTransactionViewModel $payload,
+        Sender $sender,
+        Receiver $receiver
+    ): Transaction {
         /** @var Transaction $transaction */
         $transaction = DB::transaction(function () use ($payload, $sender, $receiver) {
             $this->locker->lock($sender);
