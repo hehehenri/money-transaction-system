@@ -18,4 +18,6 @@ interface EventRepository
     public function create(EventType $type, Payload $payload): Event;
 
     public function getUnprocessed(): UnprocessedEventsMap;
+
+    public function markAsProcessed(Event $event): void;
 }

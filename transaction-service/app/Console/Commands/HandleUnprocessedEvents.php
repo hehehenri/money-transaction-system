@@ -17,7 +17,7 @@ class HandleUnprocessedEvents extends Command
         $unprocessedEvents = $repository->getUnprocessed();
 
         foreach (EventType::cases() as $type) {
-            $events = $unprocessedEvents->get($type);
+            $events = $unprocessedEvents->get($type->value);
 
             $type->handler()->handle($events);
         }

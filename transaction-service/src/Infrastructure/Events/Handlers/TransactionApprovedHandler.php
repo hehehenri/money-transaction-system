@@ -6,7 +6,7 @@ use Exception;
 use Src\Infrastructure\Events\Entities\TransactionApproved;
 use Src\Transactions\Application\SendConfirmationNotifications;
 
-class TransactionApprovedHandler implements EventHandler
+class TransactionApprovedHandler extends EventHandler
 {
     /**
      * @param  array<TransactionApproved>  $events
@@ -15,9 +15,13 @@ class TransactionApprovedHandler implements EventHandler
      */
     public function handle(array $events): void
     {
-        /** @var SendConfirmationNotifications $sender */
-        $sender = app(SendConfirmationNotifications::class);
+        foreach ($events as $event) {
+            /** @var SendConfirmationNotifications $sender */
+            $sender = app(SendConfirmationNotifications::class);
 
-        $sender->handle($events);
+            $sender->handle($event);
+
+            $this->markAsProcessed($event);
+        }
     }
 }

@@ -27,4 +27,9 @@ class TransactionFactory extends Factory
             'status' => $status->value,
         ];
     }
+
+    public function pending(): self
+    {
+        return $this->state(['status' => TransactionStatus::PENDING->value]);
+    }
 }

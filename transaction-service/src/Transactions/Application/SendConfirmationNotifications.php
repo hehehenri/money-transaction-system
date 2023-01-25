@@ -15,18 +15,14 @@ class SendConfirmationNotifications
     }
 
     /**
-     * @param  array<TransactionApproved>  $events
-     *
      * @throws InvalidTransactionableException
      */
-    public function handle(array $events): void
+    public function handle(TransactionApproved $event): void
     {
-        foreach ($events as $event) {
-            $transactionId = new TransactionId($event->payload->serialize());
+        $transactionId = new TransactionId($event->payload->serialize());
 
-            $transactionable = $this->getTransactionable->byTransaction($transactionId);
+        $transactionable = $this->getTransactionable->byTransaction($transactionId);
 
-            DispatchConfirmationNotification::dispatch($transactionable);
-        }
+        DispatchConfirmationNotification::dispatch($transactionable);
     }
 }

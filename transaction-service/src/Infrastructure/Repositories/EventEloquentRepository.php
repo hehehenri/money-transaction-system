@@ -55,4 +55,12 @@ class EventEloquentRepository implements EventRepository
 
         return new UnprocessedEventsMap($events);
     }
+
+    public function markAsProcessed(Event $event): void
+    {
+        $this->model
+            ->query()
+            ->whereKey($event->id)
+            ->update(['processed_at' => now()]);
+    }
 }

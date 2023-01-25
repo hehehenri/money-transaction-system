@@ -26,40 +26,36 @@ class ApproveTransactions
     }
 
     /**
-     * @param  array<TransactionStored>  $events
-     *
      * @throws InvalidTransaction
      * @throws InvalidPayloadException
      * @throws InvalidEventTypeException
      */
-    public function handle(array $events): void
+    public function handle(TransactionStored $event): void
     {
-        foreach ($events as $event) {
-            $transacitonId = new TransactionId($event->payload->serialize());
+        $transacitonId = new TransactionId($event->payload->serialize());
 
-            try {
-                $transaction = $this->repository->findById($transacitonId);
-            } catch (InvalidTransactionableException) {
-                return;
-            }
-
-            if (! $transaction) {
-                throw InvalidTransaction::notFound($transacitonId);
-            }
-
-            if (! $this->timedOut->check($transaction)) {
-                $this->updateStatus->refusesTransaction($transaction);
-
-                return;
-            }
-
-            $approved = $this->authorizer->handle($transaction);
-
-            if (! $approved) {
-                throw InvalidTransaction::notApproved($transaction);
-            }
-
-            $this->storeEvent->handle(EventType::TRANSACTION_APPROVED, new TransactionApprovedPayload($transacitonId));
+        try {
+            $transaction = $this->repository->findById($transacitonId);
+        } catch (InvalidTransactionableException) {
+            return;
         }
+
+        if (! $transaction) {
+            throw InvalidTransaction::notFound($transacitonId);
+        }
+
+        if (! $this->timedOut->check($transaction)) {
+            $this->updateStatus->refusesTransaction($transaction);
+
+            return;
+        }
+
+        $approved = $this->authorizer->handle($transaction);
+
+        if (! $approved) {
+            throw InvalidTransaction::notApproved($transaction);
+        }
+
+        $this->storeEvent->handle(EventType::TRANSACTION_APPROVED, new TransactionApprovedPayload($transacitonId));
     }
 }
