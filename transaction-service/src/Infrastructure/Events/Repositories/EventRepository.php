@@ -2,7 +2,6 @@
 
 namespace Src\Infrastructure\Events\Repositories;
 
-use Src\Infrastructure\Events\Collections\EventCollection;
 use Src\Infrastructure\Events\Collections\UnprocessedEventsMap;
 use Src\Infrastructure\Events\Entities\Event;
 use Src\Infrastructure\Events\ValueObjects\EventType;

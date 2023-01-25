@@ -15,7 +15,8 @@ abstract class Map
     abstract public function valueType(): string;
 
     /**
-     * @param array<string, array<V>> $items
+     * @param  array<string, array<V>>  $items
+     *
      * @throws InvalidItemException
      */
     public function __construct(array $items)
@@ -26,8 +27,8 @@ abstract class Map
     }
 
     /**
-     * @param string $key
-     * @param array<V> $values
+     * @param  string  $key
+     * @param  array<V>  $values
      *
      * @throws InvalidItemException
      */
@@ -43,7 +44,7 @@ abstract class Map
 
         $this->map[$key] = [
             ...$this->map[$key] ?? [],
-            ...$values
+            ...$values,
         ];
     }
 
@@ -52,7 +53,7 @@ abstract class Map
      */
     public function get(string $key): array
     {
-        if (!array_key_exists($key, $this->map)) {
+        if (! array_key_exists($key, $this->map)) {
             return [];
         }
 

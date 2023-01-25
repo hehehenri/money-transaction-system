@@ -26,7 +26,9 @@ class EventModel extends Model
     use HasUuids, HasFactory;
 
     public $table = 'events';
+
     public $timestamps = false;
+
     protected $fillable = [
         'id',
         'type',

@@ -3,7 +3,6 @@
 namespace Src\Infrastructure\Repositories;
 
 use Illuminate\Database\Eloquent\Collection;
-use Src\Infrastructure\Events\Collections\EventCollection;
 use Src\Infrastructure\Events\Collections\UnprocessedEventsMap;
 use Src\Infrastructure\Events\Entities\Event;
 use Src\Infrastructure\Events\Exceptions\InvalidEventTypeException;
@@ -32,7 +31,7 @@ class EventEloquentRepository implements EventRepository
             ->create([
                 'type' => $type->value,
                 'payload' => $payload->serialize(),
-                'created_at' => now()
+                'created_at' => now(),
             ]);
 
         return $event->intoEntity();
@@ -41,18 +40,19 @@ class EventEloquentRepository implements EventRepository
     /** @throws InvalidItemException */
     public function getUnprocessed(): UnprocessedEventsMap
     {
-        /** @var Collection<EventModel> $transactions */
+        /** @var Collection<int, EventModel> $eventsModels */
         $eventsModels = $this->model
             ->query()
             ->whereNull('processed_at')
             ->get();
 
+        /** @var array<string, array<Event>> $events */
         $events = $eventsModels->mapToGroups(function (EventModel $model) {
             $event = $model->intoEntity();
 
             return [$event->type->value => $event];
-        });
+        })->toArray();
 
-        return new UnprocessedEventsMap($events->toArray());
+        return new UnprocessedEventsMap($events);
     }
 }

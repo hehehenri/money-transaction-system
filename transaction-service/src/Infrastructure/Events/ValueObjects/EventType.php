@@ -39,7 +39,6 @@ enum EventType: string
             self::TRANSACTION_STORED => app(TransactionStoredHandler::class)
         };
 
-
         return $handler;
     }
 }

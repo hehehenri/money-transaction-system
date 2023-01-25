@@ -25,7 +25,7 @@ class EventFactory extends Factory
         return [
             'type' => $type->value,
             'processed_at' => null,
-            'created_at' => now()
+            'created_at' => now(),
         ];
     }
 
@@ -36,7 +36,7 @@ class EventFactory extends Factory
         return $this->state(
             /** @var array<string, string> $attributes */
             fn (array $attributes) => [
-                    'processed_at' => $at
+                'processed_at' => $at,
             ]
         );
     }

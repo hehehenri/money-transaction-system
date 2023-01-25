@@ -6,6 +6,6 @@ use Src\Infrastructure\Events\Entities\Event;
 
 interface EventHandler
 {
-    /** @param array<Event> $events */
+    /** @param  array<Event>  $events */
     public function handle(array $events): void;
 }

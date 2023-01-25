@@ -22,9 +22,9 @@ class EventRepositoryTest extends TestCase
         $payload = new TransactionStoredPayload(new TransactionId(Str::uuid()->toString()));
 
         $events = EventModel::factory([
-                'type' => $type->value,
-                'payload' => $payload->serialize(),
-            ])
+            'type' => $type->value,
+            'payload' => $payload->serialize(),
+        ])
             ->count(2)
             ->create();
 

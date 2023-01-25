@@ -9,13 +9,14 @@ use Src\Infrastructure\Events\ValueObjects\EventType;
 class HandleUnprocessedEvents extends Command
 {
     protected $signature = 'events:handle';
+
     protected $description = 'Handle unprocessed events';
 
-   public function handle(EventRepository $repository): int
+    public function handle(EventRepository $repository): int
     {
         $unprocessedEvents = $repository->getUnprocessed();
 
-        foreach(EventType::cases() as $type) {
+        foreach (EventType::cases() as $type) {
             $events = $unprocessedEvents->get($type);
 
             $type->handler()->handle($events);

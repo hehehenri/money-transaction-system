@@ -3,11 +3,10 @@
 namespace Src\Infrastructure\Events\Collections;
 
 use Src\Infrastructure\Events\Entities\Event;
-use Src\Infrastructure\Events\ValueObjects\EventType;
 use Src\Shared\Collections\Map;
 
 /**
- * @extends Map<string, Event>
+ * @extends Map<Event>
  */
 class UnprocessedEventsMap extends Map
 {
