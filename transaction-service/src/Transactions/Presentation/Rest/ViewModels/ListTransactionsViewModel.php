@@ -9,7 +9,6 @@ use Src\Transactions\Presentation\Rest\Requests\ListTransactionsRequest;
 
 class ListTransactionsViewModel
 {
-    
     public function __construct(
         public readonly ProviderId $providerId,
         public readonly Provider $provider,

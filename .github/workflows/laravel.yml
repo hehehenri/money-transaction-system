@@ -115,13 +115,13 @@ jobs:
           MYSQL_ROOT_PASSWORD: root
           MYSQL_DATABASE: transactions
         ports:
-          - 3306/tcp
+          - 3307/tcp
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
       redis:
         image: redis
         ports:
-          - 6379/tcp
+          - 6380/tcp
         options: --health-cmd="redis-cli ping" --health-interval=10s --health-timeout=5s --health-retries=3
     strategy:
       fail-fast: false
