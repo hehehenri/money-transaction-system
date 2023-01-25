@@ -2,6 +2,8 @@
 
 namespace Src\Transactions\Domain\Repositories;
 
+use Src\Shared\Constraints\Paginator;
+use Src\Transactionables\Domain\Entities\Transactionable;
 use Src\Transactionables\Domain\Exceptions\InvalidTransactionableException;
 use Src\Transactions\Domain\DTOs\StoreTransactionDTO;
 use Src\Transactions\Domain\Entities\Transaction;
@@ -17,4 +19,6 @@ interface TransactionRepository
 
     /** @throws InvalidTransactionableException */
     public function findById(TransactionId $id): ?Transaction;
+
+    public function getPaginated(Transactionable $transactionable, int $page = 1, int $perPage = 15): Paginator;
 }

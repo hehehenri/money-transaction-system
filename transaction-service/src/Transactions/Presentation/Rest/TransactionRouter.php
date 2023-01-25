@@ -11,6 +11,7 @@ class TransactionRouter extends RouteServiceProvider
     public function register(): void
     {
         Route::name('transaction.')->prefix('transaction')->group(function () {
+            Route::get('/', [TransactionController::class, 'list'])->name('list');
             Route::post('/store', [TransactionController::class, 'store'])->name('store');
         });
     }

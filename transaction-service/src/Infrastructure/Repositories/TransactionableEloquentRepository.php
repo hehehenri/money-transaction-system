@@ -9,6 +9,7 @@ use Src\Transactionables\Domain\Entities\Transactionable;
 use Src\Transactionables\Domain\Enums\Provider;
 use Src\Transactionables\Domain\Repositories\TransactionableRepository;
 use Src\Transactionables\Domain\ValueObjects\ProviderId;
+use Src\Transactionables\Domain\ValueObjects\TransactionableId;
 use Src\Transactions\Domain\ValueObjects\TransactionId;
 
 class TransactionableEloquentRepository implements TransactionableRepository
@@ -50,5 +51,16 @@ class TransactionableEloquentRepository implements TransactionableRepository
             ->first();
 
         return $transaction?->sender->intoEntity();
+    }
+
+    public function getById(TransactionableId $id): ?Transactionable
+    {
+        /** @var ?TransactionableModel $transactionable */
+        $transactionable = $this->transactionableModel
+            ->query()
+            ->whereKey($id)
+            ->first();
+
+        return $transactionable?->intoEntity();
     }
 }

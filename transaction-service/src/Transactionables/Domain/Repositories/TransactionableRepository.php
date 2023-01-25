@@ -6,6 +6,7 @@ use Src\Transactionables\Domain\DTOs\TransactionableDTO;
 use Src\Transactionables\Domain\Entities\Transactionable;
 use Src\Transactionables\Domain\Enums\Provider;
 use Src\Transactionables\Domain\ValueObjects\ProviderId;
+use Src\Transactionables\Domain\ValueObjects\TransactionableId;
 use Src\Transactions\Domain\ValueObjects\TransactionId;
 
 interface TransactionableRepository
@@ -15,4 +16,6 @@ interface TransactionableRepository
     public function get(ProviderId $providerId, Provider $provider): ?Transactionable;
 
     public function getByTransactionId(TransactionId $id): ?Transactionable;
+
+    public function getById(TransactionableId $id): ?Transactionable;
 }

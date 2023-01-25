@@ -8,6 +8,7 @@ use Src\Transactionables\Domain\Enums\Provider;
 use Src\Transactionables\Domain\Exceptions\TransactionableNotFoundException;
 use Src\Transactionables\Domain\Repositories\TransactionableRepository;
 use Src\Transactionables\Domain\ValueObjects\ProviderId;
+use Src\Transactionables\Domain\ValueObjects\TransactionableId;
 use Src\Transactions\Domain\ValueObjects\TransactionId;
 
 class GetTransactionable
@@ -37,6 +38,18 @@ class GetTransactionable
 
         if (! $transactionable) {
             throw InvalidTransactionableException::transactionNotFound($id);
+        }
+
+        return $transactionable;
+    }
+
+    /** @throws InvalidTransactionableException */
+    public function byId(TransactionableId $id): Transactionable
+    {
+        $transactionable = $this->repository->getById($id);
+
+        if (! $transactionable) {
+            throw InvalidTransactionableException::idNotFound($id);
         }
 
         return $transactionable;

@@ -3,6 +3,8 @@
 namespace Src\Infrastructure\Repositories;
 
 use Src\Infrastructure\Models\TransactionModel;
+use Src\Infrastructure\ValueObjects\Paginator;
+use Src\Transactionables\Domain\Entities\Transactionable;
 use Src\Transactionables\Domain\Exceptions\InvalidTransactionableException;
 use Src\Transactions\Domain\DTOs\StoreTransactionDTO;
 use Src\Transactions\Domain\Entities\Transaction;
@@ -45,5 +47,20 @@ class TransactionEloquentRepository implements TransactionRepository
             ->first();
 
         return $transactionModel?->intoEntity();
+    }
+
+    public function getPaginated(Transactionable $transactionable, int $page = 1, int $perPage = 15): Paginator
+    {
+        $paginated = $this->model
+            ->query()
+            ->where('sender_id')
+            ->orWhere('receiver_id')
+            ->paginate(15, page: $page);
+
+        return new Paginator(
+            $paginated->items(),
+            $paginated->total(),
+            $paginated->perPage()
+        );
     }
 }
