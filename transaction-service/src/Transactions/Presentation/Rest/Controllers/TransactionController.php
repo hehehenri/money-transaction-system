@@ -5,11 +5,12 @@ namespace Src\Transactions\Presentation\Rest\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\JsonResponse;
-use Src\Transactionables\Application\Exceptions\InvalidTransactionableException as InvalidTransactionableExceptionAlias;
+use Src\Transactionables\Application\Exceptions\InvalidTransactionableException as InvalidTransactionAppException;
 use Src\Transactionables\Domain\Exceptions\InvalidTransactionableException;
 use Src\Transactionables\Domain\Exceptions\TransactionableNotFoundException;
 use Src\Transactions\Application\ListTransactions;
 use Src\Transactions\Application\StoreTransaction;
+use Src\Transactions\Presentation\Exceptions\InvalidPayloadException;
 use Src\Transactions\Presentation\Rest\Requests\ListTransactionsRequest;
 use Src\Transactions\Presentation\Rest\Requests\StoreTransactionRequest as Request;
 use Src\Transactions\Presentation\Rest\ViewModels\ListTransactionsViewModel;
@@ -21,12 +22,15 @@ class TransactionController extends Controller
     public function list(
         ListTransactionsRequest $request,
         ListTransactions $listTransactions,
-        string $transactionableId,
         ResponseFactory $response
     ): JsonResponse {
         try {
-            $transactions = $listTransactions->paginated(ListTransactionsViewModel::fromRequest($request, $transactionableId));
-        } catch (InvalidTransactionableExceptionAlias $e) {
+            $payload = ListTransactionsViewModel::fromRequest($request);
+
+            $transactions = $listTransactions->paginated($payload);
+        } catch (InvalidPayloadException $e) {
+            return $response->json($e->getMessage(), Response::HTTP_UNPROCESSABLE_ENTITY);
+        } catch (TransactionableNotFoundException|InvalidTransactionAppException $e) {
             return $response->json($e->getMessage(), Response::HTTP_NOT_FOUND);
         }
 

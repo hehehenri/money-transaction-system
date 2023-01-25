@@ -49,13 +49,13 @@ class TransactionEloquentRepository implements TransactionRepository
         return $transactionModel?->intoEntity();
     }
 
-    public function getPaginated(Transactionable $transactionable, int $page = 1, int $perPage = 15): Paginator
+    public function getPaginated(Transactionable $transactionable, int $page, int $perPage): Paginator
     {
         $paginated = $this->model
             ->query()
-            ->where('sender_id')
-            ->orWhere('receiver_id')
-            ->paginate(15, page: $page);
+            ->where('sender_id', $transactionable->id)
+            ->orWhere('receiver_id', $transactionable->id)
+            ->paginate($perPage, page: $page);
 
         return new Paginator(
             $paginated->items(),

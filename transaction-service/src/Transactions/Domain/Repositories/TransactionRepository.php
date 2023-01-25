@@ -20,5 +20,5 @@ interface TransactionRepository
     /** @throws InvalidTransactionableException */
     public function findById(TransactionId $id): ?Transaction;
 
-    public function getPaginated(Transactionable $transactionable, int $page = 1, int $perPage = 15): Paginator;
+    public function getPaginated(Transactionable $transactionable, int $page, int $perPage): Paginator;
 }
