@@ -1,0 +1,59 @@
+version: '3'
+
+services:
+  transactions-db:
+    image: mysql:8
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - "3307:3306"
+    volumes:
+      - transactions-data:/var/lib/mysql
+      - ./migrations:/docker-entrypoint-initdb.d
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: transactions
+
+  transactions-cache:
+    image: redis:7-alpine
+    ports:
+      - "6380:6379"
+
+  customers-db:
+    image: mysql:8
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - "3309:3306"
+    volumes:
+      - customers-data:/var/lib/mysql
+      - ./migrations:/docker-entrypoint-initdb.d
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: customers
+
+  customers-cache:
+    image: redis:7-alpine
+    ports:
+      - "6381:6379"
+
+  shopkeepers-db:
+    image: mysql:8
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - "3310:3306"
+    volumes:
+      - shopkeepers-data:/var/lib/mysql
+      - ./migrations:/docker-entrypoint-initdb.d
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: shopkeepers
+
+  shopkeepers-cache:
+    image: redis:7-alpine
+    ports:
+      - "6382:6379"
+
+
+volumes:
+  transactions-data:
+  customers-data:
+  shopkeepers-data:
