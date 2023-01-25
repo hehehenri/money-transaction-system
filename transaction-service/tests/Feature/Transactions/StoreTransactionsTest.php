@@ -122,7 +122,7 @@ class StoreTransactionsTest extends TestCase
     {
         LedgerModel::factory([
             'transactionable_id' => $transactionable->id,
-            'amount' => $money->value(),
+            'balance' => $money->value(),
         ])->create();
     }
 }

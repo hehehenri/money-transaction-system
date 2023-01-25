@@ -23,7 +23,7 @@ class GetLedgerTest extends TestCase
 
         $this->getJson(route('ledger.show', [
             'provider' => $transactionable->provider->value,
-            'provider_id' => (string) $transactionable->providerId
+            'provider_id' => (string) $transactionable->providerId,
         ]))->assertOk();
     }
 
@@ -32,7 +32,7 @@ class GetLedgerTest extends TestCase
     {
         $this->getJson(route('ledger.show', [
             'provider' => $provider,
-            'provider_id' => $providerId
+            'provider_id' => $providerId,
         ]))->assertUnprocessable();
     }
 

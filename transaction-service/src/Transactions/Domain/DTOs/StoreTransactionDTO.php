@@ -10,9 +10,9 @@ use Src\Transactions\Domain\Enums\TransactionStatus;
 class StoreTransactionDTO
 {
     public function __construct(
-        private readonly Sender   $sender,
+        private readonly Sender $sender,
         private readonly Receiver $receiver,
-        private readonly Money    $balance,
+        private readonly Money $balance,
     ) {
     }
 
