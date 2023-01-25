@@ -10,9 +10,9 @@ use Src\Transactions\Domain\Enums\TransactionStatus;
 class StoreTransactionDTO
 {
     public function __construct(
-        private readonly Sender $sender,
+        private readonly Sender   $sender,
         private readonly Receiver $receiver,
-        private readonly Money $amount,
+        private readonly Money    $balance,
     ) {
     }
 
@@ -22,7 +22,7 @@ class StoreTransactionDTO
         return [
             'sender_id' => (string) $this->sender->id,
             'receiver_id' => (string) $this->receiver->id,
-            'amount' => $this->amount->value(),
+            'amount' => $this->balance->value(),
             'status' => TransactionStatus::PENDING->value,
         ];
     }

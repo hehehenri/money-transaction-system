@@ -22,7 +22,7 @@ class LedgerFactory extends Factory
     {
         return [
             'transactionable_id' => TransactionableModel::factory(),
-            'amount' => $this->faker->numberBetween(100, 100000),
+            'balance' => $this->faker->numberBetween(100, 100000),
         ];
     }
 }

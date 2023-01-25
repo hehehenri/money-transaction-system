@@ -9,7 +9,16 @@ class Ledger
 {
     public function __construct(
         public readonly Transactionable $transactionable,
-        public readonly Money $amount
+        public readonly Money $balance
     ) {
+    }
+
+    /** @return array<string, int|array<string>> */
+    public function jsonSerialize(): array
+    {
+        return [
+            'transactionable' => $this->transactionable->jsonSerialize(),
+            'balance' => $this->balance->value(),
+        ];
     }
 }

@@ -6,29 +6,19 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-    public function up()
+    public function up(): void
     {
         Schema::create('ledgers', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('transactionable_id')
                 ->references('id')
                 ->on('transactionables');
-            $table->integer('amount');
+            $table->integer('balance');
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('ledgers');
     }

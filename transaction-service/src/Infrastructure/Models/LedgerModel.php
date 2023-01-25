@@ -14,22 +14,22 @@ use Src\Shared\ValueObjects\Money;
  *
  * @property TransactionableModel $transactionable
  * @property string $transactionable_id
- * @property int $amount
+ * @property int $balance
  */
 class LedgerModel extends Model
 {
     use HasUuids, HasFactory;
 
     protected $table = 'ledgers';
-
     protected $fillable = [
+        'id',
         'transactionable_id',
-        'amount',
+        'balance',
     ];
 
     public function transactionable(): BelongsTo
     {
-        return $this->belongsTo(TransactionableModel::class);
+        return $this->belongsTo(TransactionableModel::class, 'transactionable_id', 'id');
     }
 
     public function intoEntity(): Ledger
@@ -38,7 +38,7 @@ class LedgerModel extends Model
 
         return new Ledger(
             $transactionable,
-            new Money($this->amount)
+            new Money($this->balance)
         );
     }
 

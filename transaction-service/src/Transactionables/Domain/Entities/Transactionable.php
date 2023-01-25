@@ -41,6 +41,7 @@ class Transactionable
     public function jsonSerialize(): array
     {
         return [
+            'id' => $this->id,
             'provider' => $this->provider->value,
             'provider_id' => (string) $this->providerId,
         ];
