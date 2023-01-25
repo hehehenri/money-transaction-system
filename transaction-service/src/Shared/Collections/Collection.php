@@ -1,6 +1,6 @@
 <?php
 
-namespace Src\Shared\ValueObjects;
+namespace Src\Shared\Collections;
 
 use Src\Shared\Exceptions\InvalidItemException;
 

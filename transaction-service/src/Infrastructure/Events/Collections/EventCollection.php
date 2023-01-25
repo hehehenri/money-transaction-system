@@ -3,7 +3,7 @@
 namespace Src\Infrastructure\Events\Collections;
 
 use Src\Infrastructure\Events\Entities\Event;
-use Src\Shared\ValueObjects\Collection;
+use Src\Shared\Collections\Collection;
 
 /**
  * @extends Collection<Event>

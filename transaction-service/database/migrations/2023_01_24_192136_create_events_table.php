@@ -12,8 +12,8 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('type');
             $table->longText('payload');
-            $table->timestamps('processed_at');
-            $table->timestamps('created_at');
+            $table->timestamp('processed_at')->nullable();
+            $table->timestamp('created_at');
         });
     }
 

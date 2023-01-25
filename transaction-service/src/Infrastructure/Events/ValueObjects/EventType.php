@@ -6,6 +6,8 @@ use Carbon\Carbon;
 use Src\Infrastructure\Events\Entities\Event;
 use Src\Infrastructure\Events\Entities\TransactionStored;
 use Src\Infrastructure\Events\Exceptions\InvalidPayloadException;
+use Src\Infrastructure\Events\Handlers\EventHandler;
+use Src\Infrastructure\Events\Handlers\TransactionStoredHandler;
 use Src\Infrastructure\Events\ValueObjects\Payloads\TransactionStoredPayload;
 
 enum EventType: string
@@ -16,7 +18,7 @@ enum EventType: string
     public function intoEntity(
         EventId $id,
         string $payload,
-        Carbon $processedAt,
+        ?Carbon $processedAt,
         Carbon $createdAt,
     ): Event {
         return match ($this) {
@@ -28,5 +30,16 @@ enum EventType: string
                 $createdAt
             )
         };
+    }
+
+    public function handler(): EventHandler
+    {
+        /** @var EventHandler $handler */
+        $handler = match ($this) {
+            self::TRANSACTION_STORED => app(TransactionStoredHandler::class)
+        };
+
+
+        return $handler;
     }
 }

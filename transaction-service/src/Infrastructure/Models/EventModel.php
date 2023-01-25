@@ -3,6 +3,9 @@
 namespace Src\Infrastructure\Models;
 
 use Carbon\Carbon;
+use Database\Factories\EventFactory;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Src\Infrastructure\Events\Entities\Event;
 use Src\Infrastructure\Events\Exceptions\InvalidEventTypeException;
 use Src\Infrastructure\Events\Exceptions\InvalidPayloadException;
@@ -20,10 +23,10 @@ use Src\Infrastructure\Events\ValueObjects\EventType;
  */
 class EventModel extends Model
 {
+    use HasUuids, HasFactory;
+
     public $table = 'events';
-
     public $timestamps = false;
-
     protected $fillable = [
         'id',
         'type',
@@ -56,5 +59,10 @@ class EventModel extends Model
             $this->processed_at,
             $this->created_at
         );
+    }
+
+    protected static function newFactory(): EventFactory
+    {
+        return new EventFactory();
     }
 }
