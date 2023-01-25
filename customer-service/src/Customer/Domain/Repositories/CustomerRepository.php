@@ -5,13 +5,18 @@ namespace Src\Customer\Domain\Repositories;
 use Src\Customer\Domain\DTOs\CreateCustomerDTO;
 use Src\Customer\Domain\Entities\Customer;
 use Src\Customer\Domain\Exceptions\CustomerRepositoryException;
-use Src\User\Domain\Repositories\AuthenticatableRepository;
-use Src\User\Domain\ValueObjects\Email;
+use Src\Customer\Domain\ValueObjects\CustomerId;
+use Src\Customer\Domain\ValueObjects\Email;
+use Src\Infrastructure\Exceptions\InvalidCustomerException;
 
-interface CustomerRepository extends AuthenticatableRepository
+interface CustomerRepository
 {
+    /** @throws InvalidCustomerException */
     public function create(CreateCustomerDTO $payload): Customer;
 
     /** @throws CustomerRepositoryException */
     public function findByEmail(Email $email): ?Customer;
+
+    /** @throws InvalidCustomerException */
+    public function findById(CustomerId $id): ?Customer;
 }

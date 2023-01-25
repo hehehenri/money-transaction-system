@@ -6,6 +6,7 @@ use Avlima\PhpCpfCnpjGenerator\Generator as DocumentGenerator;
 use Exception;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
+use Src\Customer\Domain\Enums\Status;
 use Src\Infrastructure\Models\CustomerModel;
 
 /**
@@ -27,6 +28,7 @@ class CustomerFactory extends Factory
             'email' => $this->faker->email,
             'document' => DocumentGenerator::cpf(),
             'password' => Hash::make($this->faker->password),
+            'status' =>  Status::PENDING->value
         ];
     }
 }

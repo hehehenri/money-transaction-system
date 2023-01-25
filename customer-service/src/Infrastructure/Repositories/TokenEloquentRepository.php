@@ -2,33 +2,32 @@
 
 namespace Src\Infrastructure\Repositories;
 
+use Src\Auth\Domain\DTOs\CreateTokenDTO;
+use Src\Auth\Domain\Exceptions\InvalidTokenException;
+use Src\Auth\Domain\Repositories\TokenRepository;
+use Src\Auth\Domain\ValueObjects\Token;
+use Src\Customer\Domain\Repositories\CustomerRepository;
+use Src\Infrastructure\Exceptions\InvalidCustomerException;
 use Src\Infrastructure\Models\TokenModel;
-use Src\User\Domain\DTOs\CreateTokenDTO;
-use Src\User\Domain\Exceptions\AuthenticatableRepositoryException;
-use Src\User\Domain\Exceptions\InvalidTokenException;
-use Src\User\Domain\Exceptions\InvalidUserType;
-use Src\User\Domain\Repositories\TokenRepository;
-use Src\User\Domain\ValueObjects\Token;
 
 class TokenEloquentRepository implements TokenRepository
 {
-    public function __construct(private readonly TokenModel $model)
-    {
+    public function __construct(
+        private readonly TokenModel $model,
+        private readonly CustomerRepository $repository
+    ) {
     }
 
     /**
-     * @throws InvalidUserType
-     * @throws AuthenticatableRepositoryException
      * @throws InvalidTokenException
+     * @throws InvalidCustomerException
      */
     public function storeToken(CreateTokenDTO $payload): Token
     {
-        $tokenableRepository = $payload->tokenableType->repository();
+        $customer = $this->repository->findById($payload->customerId);
 
-        $tokenable = $tokenableRepository->findById($payload->tokenableId);
-
-        if (! $tokenable) {
-            throw InvalidTokenException::tokenableNotFound($payload->tokenableId, $payload->tokenableType);
+        if (! $customer) {
+            throw InvalidTokenException::customerNotFound($payload->customerId);
         }
 
         /** @var TokenModel $token */
@@ -38,7 +37,7 @@ class TokenEloquentRepository implements TokenRepository
 
         return new Token(
             $token->token,
-            $tokenable,
+            $customer,
             $token->expires_at->toDateTime()
         );
     }

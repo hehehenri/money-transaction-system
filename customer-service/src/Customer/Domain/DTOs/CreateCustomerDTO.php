@@ -2,10 +2,11 @@
 
 namespace Src\Customer\Domain\DTOs;
 
+use Src\Customer\Domain\Enums\Status;
 use Src\Customer\Domain\ValueObjects\CPF;
-use Src\User\Domain\ValueObjects\Email;
-use Src\User\Domain\ValueObjects\FullName;
-use Src\User\Domain\ValueObjects\HashedPassword;
+use Src\Customer\Domain\ValueObjects\Email;
+use Src\Customer\Domain\ValueObjects\FullName;
+use Src\Customer\Domain\ValueObjects\HashedPassword;
 
 class CreateCustomerDTO
 {
@@ -14,6 +15,7 @@ class CreateCustomerDTO
         public readonly Email $email,
         public readonly CPF $cpf,
         public readonly HashedPassword $password,
+        public readonly Status $status
     ) {
     }
 
@@ -27,6 +29,7 @@ class CreateCustomerDTO
             'email' => (string) $this->email,
             'document' => (string) $this->cpf,
             'password' => (string) $this->password,
+            'status' => $this->status->value,
         ];
     }
 }

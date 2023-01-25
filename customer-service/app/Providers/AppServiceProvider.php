@@ -3,11 +3,11 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Src\Auth\Domain\Repositories\TokenRepository;
 use Src\Customer\Domain\Repositories\CustomerRepository;
 use Src\Customer\Presentation\Rest\CustomerRouter;
 use Src\Infrastructure\Repositories\CustomerEloquentRepository;
 use Src\Infrastructure\Repositories\TokenEloquentRepository;
-use Src\User\Domain\Repositories\TokenRepository;
 
 class AppServiceProvider extends ServiceProvider
 {

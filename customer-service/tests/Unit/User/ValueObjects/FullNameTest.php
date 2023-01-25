@@ -2,8 +2,8 @@
 
 namespace Tests\Unit\User\ValueObjects;
 
-use Src\User\Domain\Exceptions\UserValidationException;
-use Src\User\Domain\ValueObjects\FullName;
+use Src\Auth\Domain\Exceptions\CustomerValidationException;
+use Src\Customer\Domain\ValueObjects\FullName;
 use Tests\TestCase;
 
 class FullNameTest extends TestCase
@@ -19,7 +19,7 @@ class FullNameTest extends TestCase
     /** @dataProvider invalidPayloads */
     public function testFullNameIsInvalid(string $invalidPayload): void
     {
-        $this->expectException(UserValidationException::class);
+        $this->expectException(CustomerValidationException::class);
 
         new FullName($invalidPayload);
     }

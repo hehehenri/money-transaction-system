@@ -2,8 +2,8 @@
 
 namespace Src\Customer\Domain\Exceptions;
 
-use Src\User\Domain\Exceptions\AuthenticatableRepositoryException;
+use Exception;
 
-abstract class CustomerRepositoryException extends AuthenticatableRepositoryException
+abstract class CustomerRepositoryException extends Exception
 {
 }

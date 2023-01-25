@@ -2,10 +2,10 @@
 
 namespace Src\Customer\Presentation\Rest\ViewModels\Auth;
 
+use Src\Auth\Domain\Exceptions\CustomerValidationException;
+use Src\Customer\Domain\ValueObjects\Email;
+use Src\Customer\Domain\ValueObjects\PlainTextPassword;
 use Src\Customer\Presentation\Rest\Requests\LoginRequest;
-use Src\User\Domain\Exceptions\UserValidationException;
-use Src\User\Domain\ValueObjects\Email;
-use Src\User\Domain\ValueObjects\PlainTextPassword;
 
 class LoginViewModel
 {
@@ -15,7 +15,7 @@ class LoginViewModel
     ) {
     }
 
-    /** @throws UserValidationException */
+    /** @throws CustomerValidationException */
     public static function fromRequest(LoginRequest $request): self
     {
         /** @var array<string, string> $payload */

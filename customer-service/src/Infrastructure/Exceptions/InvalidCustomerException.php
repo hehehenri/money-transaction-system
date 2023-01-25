@@ -3,14 +3,13 @@
 namespace Src\Infrastructure\Exceptions;
 
 use Src\Customer\Domain\Exceptions\CustomerRepositoryException;
-use Src\Shared\ValueObjects\Uuid;
 
 class InvalidCustomerException extends CustomerRepositoryException
 {
-    public static function failedToBuildCustomerFromDatabase(Uuid $id): self
+    public static function failedToBuildCustomerFromDatabase(string $id): self
     {
         return new self(sprintf(
-            'Failed to build customer from a existing database customer with ID<%s>.',
+            'Failed to build from a existing database customer with ID<%s>.',
             $id
         ));
     }

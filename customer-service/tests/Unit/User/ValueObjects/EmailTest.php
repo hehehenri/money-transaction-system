@@ -3,8 +3,8 @@
 namespace Tests\Unit\User\ValueObjects;
 
 use PHPUnit\Framework\TestCase;
-use Src\User\Domain\Exceptions\UserValidationException;
-use Src\User\Domain\ValueObjects\Email;
+use Src\Auth\Domain\Exceptions\CustomerValidationException;
+use Src\Customer\Domain\ValueObjects\Email;
 
 class EmailTest extends TestCase
 {
@@ -22,7 +22,7 @@ class EmailTest extends TestCase
     {
         $payload = 'invalid email';
 
-        $this->expectException(UserValidationException::class);
+        $this->expectException(CustomerValidationException::class);
         new Email($payload);
     }
 

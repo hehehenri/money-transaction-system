@@ -5,18 +5,17 @@ namespace Src\Infrastructure\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Src\Customer\Domain\Entities\Customer;
-use Src\Customer\Domain\InvalidParameterException as CustomerInvalidParameterException;
+use Src\Customer\Domain\Enums\Status;
 use Src\Customer\Domain\ValueObjects\CPF;
+use Src\Customer\Domain\ValueObjects\CustomerId;
+use Src\Customer\Domain\ValueObjects\Email;
+use Src\Customer\Domain\ValueObjects\FullName;
+use Src\Customer\Domain\ValueObjects\HashedPassword;
 use Src\Infrastructure\Exceptions\InvalidCustomerException;
 use Src\Infrastructure\Factories\CustomerFactory;
 use Src\Shared\ValueObjects\Uuid;
-use Src\User\Domain\Exceptions\UserValidationException as UserInvalidParameterException;
-use Src\User\Domain\ValueObjects\Email;
-use Src\User\Domain\ValueObjects\FullName;
-use Src\User\Domain\ValueObjects\HashedPassword;
 
 /**
  * @property string $id
@@ -24,6 +23,7 @@ use Src\User\Domain\ValueObjects\HashedPassword;
  * @property string $email
  * @property string $document
  * @property string $password
+ * @property string $status
  */
 class CustomerModel extends Model
 {
@@ -38,6 +38,7 @@ class CustomerModel extends Model
         'email_verified_at',
         'document',
         'password',
+        'status',
     ];
 
     protected $hidden = [
@@ -45,9 +46,9 @@ class CustomerModel extends Model
         'password',
     ];
 
-    public function tokens(): MorphMany
+    public function tokens(): HasMany
     {
-        return $this->morphMany(TokenModel::class, 'tokenable');
+        return $this->hasMany(TokenModel::class, 'customer_id');
     }
 
     protected static function newFactory(): CustomerFactory
@@ -55,23 +56,28 @@ class CustomerModel extends Model
         return new CustomerFactory();
     }
 
-    /** @throws InvalidCustomerException */
+    /**
+     * @throws InvalidCustomerException
+     */
     public function intoEntity(): Customer
     {
+        $status = Status::tryFrom($this->status);
+
+        if (! $status) {
+            throw InvalidCustomerException::failedToBuildCustomerFromDatabase(new Uuid($this->id));
+        }
+
         try {
             return new Customer(
-                new Uuid($this->id),
+                new CustomerId($this->id),
+                new Email($this->email),
+                new HashedPassword($this->password),
                 new FullName($this->full_name),
                 new CPF($this->document),
-                new Email($this->email),
-                new HashedPassword($this->password)
+                $status
             );
-        } catch (UserInvalidParameterException|CustomerInvalidParameterException $e) {
-            $exception = InvalidCustomerException::failedToBuildCustomerFromDatabase(new Uuid($this->id));
-
-            Log::error($exception->getMessage(), ['message' => $e->getMessage()]);
-
-            throw $exception;
+        } catch (\Exception) {
+            throw InvalidCustomerException::failedToBuildCustomerFromDatabase($this->id);
         }
     }
 }

@@ -31,4 +31,8 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'transactions' => [
+        'base_url' => env('TRANSACTIONS_SERVICE_URL'),
+        'service_name' => 'transactions-service',
+    ],
 ];

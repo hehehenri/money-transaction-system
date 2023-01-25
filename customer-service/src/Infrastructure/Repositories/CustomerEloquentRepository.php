@@ -5,11 +5,10 @@ namespace Src\Infrastructure\Repositories;
 use Src\Customer\Domain\DTOs\CreateCustomerDTO;
 use Src\Customer\Domain\Entities\Customer;
 use Src\Customer\Domain\Repositories\CustomerRepository;
+use Src\Customer\Domain\ValueObjects\CustomerId;
+use Src\Customer\Domain\ValueObjects\Email;
 use Src\Infrastructure\Exceptions\InvalidCustomerException;
 use Src\Infrastructure\Models\CustomerModel;
-use Src\Shared\ValueObjects\Uuid;
-use Src\User\Domain\ValueObjects\Email;
-use Src\User\Domain\ValueObjects\HashedPassword;
 
 class CustomerEloquentRepository implements CustomerRepository
 {
@@ -17,6 +16,7 @@ class CustomerEloquentRepository implements CustomerRepository
     {
     }
 
+    /** @throws InvalidCustomerException */
     public function create(CreateCustomerDTO $payload): Customer
     {
         /** @var CustomerModel $customer */
@@ -24,13 +24,7 @@ class CustomerEloquentRepository implements CustomerRepository
             ->query()
             ->create($payload->jsonSerialize());
 
-        return new Customer(
-            new Uuid($customer->id),
-            $payload->fullName,
-            $payload->cpf,
-            $payload->email,
-            new HashedPassword($customer->password),
-        );
+        return $customer->intoEntity();
     }
 
     /** @throws InvalidCustomerException */
@@ -46,10 +40,10 @@ class CustomerEloquentRepository implements CustomerRepository
     }
 
     /** @throws InvalidCustomerException */
-    public function findById(Uuid $tokenableId): ?Customer
+    public function findById(CustomerId $id): ?Customer
     {
         /** @var CustomerModel $customer */
-        $customer = $this->model->query()->find($tokenableId);
+        $customer = $this->model->query()->find($id);
 
         return $customer->intoEntity();
     }

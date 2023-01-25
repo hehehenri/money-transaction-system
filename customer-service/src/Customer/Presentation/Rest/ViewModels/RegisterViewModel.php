@@ -2,12 +2,12 @@
 
 namespace Src\Customer\Presentation\Rest\ViewModels;
 
+use Src\Auth\Domain\Exceptions\CustomerValidationException;
 use Src\Customer\Domain\ValueObjects\CPF;
+use Src\Customer\Domain\ValueObjects\Email;
+use Src\Customer\Domain\ValueObjects\FullName;
+use Src\Customer\Domain\ValueObjects\PlainTextPassword;
 use Src\Customer\Presentation\Rest\Requests\RegisterRequest;
-use Src\User\Domain\Exceptions\UserValidationException;
-use Src\User\Domain\ValueObjects\Email;
-use Src\User\Domain\ValueObjects\FullName;
-use Src\User\Domain\ValueObjects\PlainTextPassword;
 
 class RegisterViewModel
 {
@@ -20,7 +20,7 @@ class RegisterViewModel
     }
 
     /**
-     * @throws UserValidationException
+     * @throws CustomerValidationException
      */
     public static function fromRequest(RegisterRequest $request): self
     {

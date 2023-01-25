@@ -3,8 +3,8 @@
 namespace Src\Customer\Presentation\Rest\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
-use Src\User\Domain\Exceptions\UserValidationException;
-use Src\User\Domain\ValueObjects\FullName;
+use Src\Auth\Domain\Exceptions\CustomerValidationException;
+use Src\Customer\Domain\ValueObjects\FullName;
 
 final class FullNameValidation implements Rule
 {
@@ -23,7 +23,7 @@ final class FullNameValidation implements Rule
             new FullName($value);
 
             return true;
-        } catch (UserValidationException) {
+        } catch (CustomerValidationException) {
             return false;
         }
     }

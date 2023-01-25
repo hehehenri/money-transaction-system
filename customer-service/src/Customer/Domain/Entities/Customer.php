@@ -2,22 +2,36 @@
 
 namespace Src\Customer\Domain\Entities;
 
-use Src\Shared\ValueObjects\Uuid;
-use Src\User\Domain\Entities\AuthenticatableUser as User;
-use Src\User\Domain\ValueObjects\Document;
-use Src\User\Domain\ValueObjects\Email;
-use Src\User\Domain\ValueObjects\FullName;
-use Src\User\Domain\ValueObjects\HashedPassword;
+use Src\Customer\Domain\Enums\Status;
+use Src\Customer\Domain\ValueObjects\CustomerId;
+use Src\Customer\Domain\ValueObjects\Document;
+use Src\Customer\Domain\ValueObjects\Email;
+use Src\Customer\Domain\ValueObjects\FullName;
+use Src\Customer\Domain\ValueObjects\HashedPassword;
 
-final class Customer extends User
+final class Customer
 {
     public function __construct(
-        Uuid $id,
-        FullName $fullName,
-        Document $document,
-        Email $email,
-        HashedPassword $password
+        public readonly CustomerId $id,
+        public readonly Email $email,
+        public readonly HashedPassword $password,
+        public readonly FullName $fullName,
+        public readonly Document $document,
+        public readonly Status $status,
     ) {
-        parent::__construct($id, $fullName, $document, $email, $password);
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function jsonSerialize(): array
+    {
+        return [
+            'id' => (string) $this->id,
+            'email' => (string) $this->email,
+            'full_name' => (string) $this->fullName,
+            'document' => (string) $this->document,
+            'status' => $this->status->value,
+        ];
     }
 }

@@ -16,8 +16,7 @@ return new class extends Migration
         Schema::create('personal_access_tokens', function (Blueprint $table) {
             $table->uuid('id')->primary();
 
-            $table->string('tokenable_id');
-            $table->string('tokenable_type');
+            $table->string('customer_id');
             $table->string('token')->unique();
             $table->timestamp('expires_at');
 

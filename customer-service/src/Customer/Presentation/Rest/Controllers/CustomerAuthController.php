@@ -5,18 +5,17 @@ namespace Src\Customer\Presentation\Rest\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\ResponseFactory;
-use Src\Customer\Application\Exceptions\CustomerValidationException;
-use Src\Customer\Application\LoginCustomer;
-use Src\Customer\Application\RegisterCustomer;
+use Src\Auth\Application\Exceptions\CustomerValidationException;
+use Src\Auth\Application\LoginCustomer;
+use Src\Auth\Application\RegisterCustomer;
+use Src\Auth\Domain\Exceptions\CustomerValidationException as CustomerAuthValidationException;
+use Src\Auth\Domain\Exceptions\InvalidTokenException;
+use Src\Customer\Domain\Exceptions\CustomerRepositoryException;
 use Src\Customer\Presentation\Rest\Requests\LoginRequest;
 use Src\Customer\Presentation\Rest\Requests\RegisterRequest;
 use Src\Customer\Presentation\Rest\ViewModels\Auth\LoginViewModel;
 use Src\Customer\Presentation\Rest\ViewModels\RegisterViewModel;
 use Src\Infrastructure\Exceptions\AuthenticationException;
-use Src\User\Domain\Exceptions\AuthenticatableRepositoryException;
-use Src\User\Domain\Exceptions\InvalidTokenException;
-use Src\User\Domain\Exceptions\InvalidUserType;
-use Src\User\Domain\Exceptions\UserValidationException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Response as HttpResponse;
 
@@ -26,7 +25,7 @@ class CustomerAuthController extends Controller
     {
         try {
             $payload = RegisterViewModel::fromRequest($request);
-        } catch (UserValidationException $e) {
+        } catch (CustomerAuthValidationException $e) {
             return $response->json(['error' => $e->getMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
@@ -41,11 +40,11 @@ class CustomerAuthController extends Controller
             $payload = LoginViewModel::fromRequest($request);
 
             $token = $login->handle($payload);
-        } catch (UserValidationException|CustomerValidationException|InvalidTokenException|InvalidUserType $e) {
+        } catch (CustomerValidationException|InvalidTokenException|CustomerAuthValidationException $e) {
             return $response->json(['error' => $e->getMessage()], HttpResponse::HTTP_UNPROCESSABLE_ENTITY);
         } catch (AuthenticationException $e) {
             return $response->json(['error' => $e->getMessage()], HttpResponse::HTTP_UNAUTHORIZED);
-        } catch (AuthenticatableRepositoryException) {
+        } catch (CustomerRepositoryException) {
             return $response->json(['error' => 'Internal server error', HttpResponse::HTTP_INTERNAL_SERVER_ERROR]);
         }
 

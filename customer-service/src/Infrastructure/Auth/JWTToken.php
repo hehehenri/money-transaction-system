@@ -4,7 +4,7 @@ namespace Src\Infrastructure\Auth;
 
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
-use Src\User\Domain\ValueObjects\Token;
+use Src\Auth\Domain\ValueObjects\Token;
 
 class JWTToken
 {
