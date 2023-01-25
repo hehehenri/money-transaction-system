@@ -102,8 +102,6 @@ jobs:
       DB_DATABASE: transactions
       DB_USERNAME: root
       DB_PASSWORD: root
-      DB_PORT: 3306
-      REDIS_PORT: 6379
       BROADCAST_DRIVER: log
       CACHE_DRIVER: redis
       QUEUE_CONNECTION: redis
