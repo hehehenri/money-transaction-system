@@ -13,16 +13,17 @@ class RegisterTransactionableTest extends TestCase
     use RefreshDatabase;
 
     /**
-     * @param string $providerId
-     * @param Provider $provider
+     * @param  string  $providerId
+     * @param  Provider  $provider
      * @return void
+     *
      * @dataProvider validPayload
      */
     public function testItRegistersATransactionable(string $providerId, Provider $provider): void
     {
         $response = $this->postJson(route('transactionable.register'), [
             'provider_id' => $providerId,
-            'provider' => $provider->value
+            'provider' => $provider->value,
         ]);
 
         $response->assertCreated();
@@ -33,16 +34,17 @@ class RegisterTransactionableTest extends TestCase
     }
 
     /**
-     * @param string $providerId
-     * @param string $provider
+     * @param  string  $providerId
+     * @param  string  $provider
      * @return void
+     *
      * @dataProvider invalidPayload
      */
     public function testItReturnsValidationErrors(string $providerId, string $provider): void
     {
         $response = $this->postJson(route('transactionable.register'), [
             'provider_id' => $providerId,
-            'provider' => $provider
+            'provider' => $provider,
         ]);
         $response->assertUnprocessable();
     }
@@ -61,7 +63,7 @@ class RegisterTransactionableTest extends TestCase
     {
         return [
             'invalid_uuid' => ['invalid_uuid', Provider::CUSTOMERS->value],
-            'invalid_provider' => [Str::uuid()->toString(), 'wrong_provider']
+            'invalid_provider' => [Str::uuid()->toString(), 'wrong_provider'],
         ];
     }
 }

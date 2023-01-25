@@ -59,6 +59,7 @@ class ApproveTransactions
             throw InvalidTransaction::notApproved($transaction);
         }
 
+        /** @phpstan-ignore-next-line */
         DB::transaction(function () use ($transaction) {
             $this->storeEvent->handle(
                 EventType::TRANSACTION_APPROVED,
