@@ -28,7 +28,7 @@ class CustomerFactory extends Factory
             'email' => $this->faker->email,
             'document' => DocumentGenerator::cpf(),
             'password' => Hash::make($this->faker->password),
-            'status' =>  Status::PENDING->value
+            'status' => Status::PENDING->value,
         ];
     }
 }
