@@ -8,6 +8,7 @@ use Src\Transactions\Domain\DTOs\StoreTransactionDTO;
 use Src\Transactions\Domain\Entities\Transaction;
 use Src\Transactions\Domain\Enums\TransactionStatus;
 use Src\Transactions\Domain\Repositories\TransactionRepository;
+use Src\Transactions\Domain\ValueObjects\TransactionId;
 
 class TransactionEloquentRepository implements TransactionRepository
 {
@@ -32,5 +33,17 @@ class TransactionEloquentRepository implements TransactionRepository
             ->query()
             ->where('id', $transaciton->id)
             ->update(['status' => $status->value]);
+    }
+
+    /** @throws InvalidTransactionableException */
+    public function findById(TransactionId $id): ?Transaction
+    {
+        /** @var ?TransactionModel $transactionModel */
+        $transactionModel = $this->model
+            ->query()
+            ->where('id', (string) $id)
+            ->first();
+
+        return $transactionModel?->intoEntity();
     }
 }

@@ -3,6 +3,7 @@
 namespace Src\Infrastructure\Events\Entities;
 
 use Carbon\Carbon;
+use Src\Infrastructure\Events\DTOs\EventDTO;
 use Src\Infrastructure\Events\ValueObjects\EventId;
 use Src\Infrastructure\Events\ValueObjects\EventType;
 use Src\Infrastructure\Events\ValueObjects\Payloads\Payload;
@@ -17,4 +18,6 @@ abstract class Event
         public readonly Carbon $createdAt
     ) {
     }
+
+    abstract public static function fromDto(EventDTO $fromDatabase): self;
 }

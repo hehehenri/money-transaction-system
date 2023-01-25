@@ -5,9 +5,9 @@ namespace Src\Infrastructure\Events\Entities;
 use Src\Infrastructure\Events\DTOs\EventDTO;
 use Src\Infrastructure\Events\Exceptions\InvalidPayloadException;
 use Src\Infrastructure\Events\ValueObjects\EventId;
-use Src\Infrastructure\Events\ValueObjects\Payloads\TransactionStoredPayload;
+use Src\Infrastructure\Events\ValueObjects\Payloads\TransactionApprovedPayload;
 
-final class TransactionStored extends Event
+class TransactionApproved extends Event
 {
     /**
      * @throws InvalidPayloadException
@@ -17,7 +17,7 @@ final class TransactionStored extends Event
         return new self(
             new EventId($fromDatabase->id),
             $fromDatabase->type,
-            TransactionStoredPayload::deserialize($fromDatabase->payload),
+            TransactionApprovedPayload::deserialize($fromDatabase->payload),
             $fromDatabase->processedAt,
             $fromDatabase->createdAt
         );

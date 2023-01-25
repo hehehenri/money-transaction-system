@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Database\Factories\EventFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Src\Infrastructure\Events\DTOs\EventDTO;
 use Src\Infrastructure\Events\Entities\Event;
 use Src\Infrastructure\Events\Exceptions\InvalidEventTypeException;
 use Src\Infrastructure\Events\Exceptions\InvalidPayloadException;
@@ -55,12 +56,13 @@ class EventModel extends Model
             throw InvalidEventTypeException::cannotDeserializeFromType($this->type);
         }
 
-        return $type->intoEntity(
+        return $type->intoEntity(new EventDTO(
             new EventId($this->id),
             $this->payload,
+            $type,
             $this->processed_at,
             $this->created_at
-        );
+        ));
     }
 
     protected static function newFactory(): EventFactory

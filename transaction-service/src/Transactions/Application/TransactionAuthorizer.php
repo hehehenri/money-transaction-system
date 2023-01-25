@@ -2,10 +2,10 @@
 
 namespace Src\Transactions\Application;
 
-use Src\Infrastructure\Clients\Exceptions\InvalidURIException;
-use Src\Infrastructure\Clients\Exceptions\RequestException;
-use Src\Infrastructure\Clients\Exceptions\ResponseException;
-use Src\Infrastructure\Clients\TransactionAuthorizer\TransactionAuthorizerClient;
+use Src\Infrastructure\Clients\Http\Exceptions\InvalidURIException;
+use Src\Infrastructure\Clients\Http\Exceptions\RequestException;
+use Src\Infrastructure\Clients\Http\Exceptions\ResponseException;
+use Src\Infrastructure\Clients\Http\TransactionAuthorizerClient;
 use Src\Transactions\Domain\Entities\Transaction;
 
 class TransactionAuthorizer

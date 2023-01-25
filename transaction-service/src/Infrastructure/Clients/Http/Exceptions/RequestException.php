@@ -1,9 +1,9 @@
 <?php
 
-namespace Src\Infrastructure\Clients\Exceptions;
+namespace Src\Infrastructure\Clients\Http\Exceptions;
 
 use Exception;
-use Src\Infrastructure\Clients\ValueObjects\URI;
+use Src\Infrastructure\Clients\Http\ValueObjects\URI;
 
 class RequestException extends Exception
 {

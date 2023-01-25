@@ -1,6 +1,6 @@
 <?php
 
-namespace Src\Infrastructure\Clients\CircuitBreaker;
+namespace Src\Infrastructure\Clients\Http\CircuitBreaker;
 
 use Illuminate\Support\Facades\Cache;
 

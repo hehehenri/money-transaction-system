@@ -1,14 +1,13 @@
 <?php
 
-namespace Src\Infrastructure\Clients\TransactionAuthorizer;
+namespace Src\Infrastructure\Clients\Http;
 
 use GuzzleHttp\Client;
-use Src\Infrastructure\Clients\BaseClient;
-use Src\Infrastructure\Clients\Enums\Method;
-use Src\Infrastructure\Clients\Exceptions\InvalidURIException;
-use Src\Infrastructure\Clients\Exceptions\RequestException;
-use Src\Infrastructure\Clients\Exceptions\ResponseException;
-use Src\Infrastructure\Clients\ValueObjects\URI;
+use Src\Infrastructure\Clients\Http\Enums\Method;
+use Src\Infrastructure\Clients\Http\Exceptions\InvalidURIException;
+use Src\Infrastructure\Clients\Http\Exceptions\RequestException;
+use Src\Infrastructure\Clients\Http\Exceptions\ResponseException;
+use Src\Infrastructure\Clients\Http\ValueObjects\URI;
 use Symfony\Component\HttpFoundation\Response;
 
 class TransactionAuthorizerClient

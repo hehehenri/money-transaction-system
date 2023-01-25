@@ -1,15 +1,15 @@
 <?php
 
-namespace Src\Infrastructure\Clients;
+namespace Src\Infrastructure\Clients\Http;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Psr\Http\Message\ResponseInterface;
-use Src\Infrastructure\Clients\CircuitBreaker\CircuitBreaker;
-use Src\Infrastructure\Clients\Enums\Method;
-use Src\Infrastructure\Clients\Exceptions\RequestException;
-use Src\Infrastructure\Clients\Exceptions\ResponseException;
-use Src\Infrastructure\Clients\ValueObjects\URI;
+use Src\Infrastructure\Clients\Http\CircuitBreaker\CircuitBreaker;
+use Src\Infrastructure\Clients\Http\Enums\Method;
+use Src\Infrastructure\Clients\Http\Exceptions\RequestException;
+use Src\Infrastructure\Clients\Http\Exceptions\ResponseException;
+use Src\Infrastructure\Clients\Http\ValueObjects\URI;
 
 class BaseClient
 {

@@ -2,33 +2,26 @@
 
 namespace Src\Infrastructure\Events\ValueObjects;
 
-use Carbon\Carbon;
+use Src\Infrastructure\Events\DTOs\EventDTO;
 use Src\Infrastructure\Events\Entities\Event;
+use Src\Infrastructure\Events\Entities\TransactionApproved;
 use Src\Infrastructure\Events\Entities\TransactionStored;
 use Src\Infrastructure\Events\Exceptions\InvalidPayloadException;
 use Src\Infrastructure\Events\Handlers\EventHandler;
+use Src\Infrastructure\Events\Handlers\TransactionApprovedHandler;
 use Src\Infrastructure\Events\Handlers\TransactionStoredHandler;
-use Src\Infrastructure\Events\ValueObjects\Payloads\TransactionStoredPayload;
 
 enum EventType: string
 {
     case TRANSACTION_STORED = 'transaction_stored';
+    case TRANSACTION_APPROVED = 'transaction_approved';
 
     /** @throws InvalidPayloadException */
-    public function intoEntity(
-        EventId $id,
-        string $payload,
-        ?Carbon $processedAt,
-        Carbon $createdAt,
-    ): Event {
+    public function intoEntity(EventDTO $dto): Event
+    {
         return match ($this) {
-            self::TRANSACTION_STORED => new TransactionStored(
-                $id,
-                $this,
-                TransactionStoredPayload::deserialize($payload),
-                $processedAt,
-                $createdAt
-            )
+            self::TRANSACTION_STORED => TransactionStored::fromDto($dto),
+            self::TRANSACTION_APPROVED => TransactionApproved::fromDto($dto)
         };
     }
 
@@ -36,7 +29,8 @@ enum EventType: string
     {
         /** @var EventHandler $handler */
         $handler = match ($this) {
-            self::TRANSACTION_STORED => app(TransactionStoredHandler::class)
+            self::TRANSACTION_STORED => app(TransactionStoredHandler::class),
+            self::TRANSACTION_APPROVED => app(TransactionApprovedHandler::class),
         };
 
         return $handler;

@@ -1,21 +1,25 @@
 <?php
 
-namespace Src\Infrastructure\Events\Repositories;
+namespace Src\Infrastructure\Events\Application;
 
-use Src\Infrastructure\Events\Collections\UnprocessedEventsMap;
-use Src\Infrastructure\Events\Entities\Event;
 use Src\Infrastructure\Events\Exceptions\InvalidEventTypeException;
 use Src\Infrastructure\Events\Exceptions\InvalidPayloadException;
+use Src\Infrastructure\Events\Repositories\EventRepository;
 use Src\Infrastructure\Events\ValueObjects\EventType;
 use Src\Infrastructure\Events\ValueObjects\Payloads\Payload;
 
-interface EventRepository
+class StoreEvent
 {
+    public function __construct(private readonly EventRepository $repository)
+    {
+    }
+
     /**
      * @throws InvalidPayloadException
      * @throws InvalidEventTypeException
      */
-    public function create(EventType $type, Payload $payload): Event;
-
-    public function getUnprocessed(): UnprocessedEventsMap;
+    public function handle(EventType $type, Payload $payload): void
+    {
+        $this->repository->create($type, $payload);
+    }
 }

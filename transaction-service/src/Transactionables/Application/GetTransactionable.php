@@ -2,11 +2,13 @@
 
 namespace Src\Transactionables\Application;
 
+use Src\Transactionables\Application\Exceptions\InvalidTransactionableException;
 use Src\Transactionables\Domain\Entities\Transactionable;
 use Src\Transactionables\Domain\Enums\Provider;
 use Src\Transactionables\Domain\Exceptions\TransactionableNotFoundException;
 use Src\Transactionables\Domain\Repositories\TransactionableRepository;
 use Src\Transactionables\Domain\ValueObjects\ProviderId;
+use Src\Transactions\Domain\ValueObjects\TransactionId;
 
 class GetTransactionable
 {
@@ -15,12 +17,26 @@ class GetTransactionable
     }
 
     /** @throws TransactionableNotFoundException */
-    public function handle(ProviderId $providerId, Provider $provider): Transactionable
+    public function byProvider(ProviderId $providerId, Provider $provider): Transactionable
     {
         $transactionable = $this->repository->get($providerId, $provider);
 
         if (! $transactionable) {
             throw TransactionableNotFoundException::providerInformation($providerId, $provider);
+        }
+
+        return $transactionable;
+    }
+
+    /**
+     * @throws InvalidTransactionableException
+     */
+    public function byTransaction(TransactionId $id): Transactionable
+    {
+        $transactionable = $this->repository->getByTransactionId($id);
+
+        if (! $transactionable) {
+            throw InvalidTransactionableException::transactionNotFound($id);
         }
 
         return $transactionable;

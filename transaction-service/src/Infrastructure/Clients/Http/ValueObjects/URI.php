@@ -1,8 +1,8 @@
 <?php
 
-namespace Src\Infrastructure\Clients\ValueObjects;
+namespace Src\Infrastructure\Clients\Http\ValueObjects;
 
-use Src\Infrastructure\Clients\Exceptions\InvalidURIException;
+use Src\Infrastructure\Clients\Http\Exceptions\InvalidURIException;
 use Src\Shared\ValueObjects\Stringable;
 
 class URI extends Stringable

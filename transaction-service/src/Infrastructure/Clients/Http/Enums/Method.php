@@ -1,6 +1,6 @@
 <?php
 
-namespace Src\Infrastructure\Clients\Enums;
+namespace Src\Infrastructure\Clients\Http\Enums;
 
 enum Method: string
 {

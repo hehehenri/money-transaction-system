@@ -33,9 +33,9 @@ class StoreTransaction
      */
     public function handle(StoreTransactionViewModel $payload): Transaction
     {
-        $sender = $this->getTransactionable->handle($payload->senderProviderId, $payload->senderProvider)
+        $sender = $this->getTransactionable->byProvider($payload->senderProviderId, $payload->senderProvider)
             ->asSender();
-        $receiver = $this->getTransactionable->handle($payload->receiverProviderId, $payload->receiverProvider)
+        $receiver = $this->getTransactionable->byProvider($payload->receiverProviderId, $payload->receiverProvider)
             ->asReceiver();
 
         $transaction = $this->createTransaction($payload, $sender, $receiver);
