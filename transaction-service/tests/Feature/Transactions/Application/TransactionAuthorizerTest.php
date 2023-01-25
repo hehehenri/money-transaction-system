@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Transactions;
+namespace Tests\Feature\Transactions\Application;
 
 use Src\Infrastructure\Models\TransactionModel;
 use Src\Transactions\Application\TransactionAuthorizer;

@@ -2,12 +2,14 @@
 
 namespace Src\Transactions\Application;
 
+use DB;
 use Src\Infrastructure\Events\Application\StoreEvent;
 use Src\Infrastructure\Events\Entities\TransactionStored;
 use Src\Infrastructure\Events\Exceptions\InvalidEventTypeException;
 use Src\Infrastructure\Events\Exceptions\InvalidPayloadException;
 use Src\Infrastructure\Events\ValueObjects\EventType;
 use Src\Infrastructure\Events\ValueObjects\Payloads\TransactionApprovedPayload;
+use Src\Ledger\Application\ApplyTransaction;
 use Src\Transactionables\Domain\Exceptions\InvalidTransactionableException;
 use Src\Transactions\Application\Exceptions\InvalidTransaction;
 use Src\Transactions\Domain\Repositories\TransactionRepository;
@@ -18,6 +20,7 @@ class ApproveTransactions
 {
     public function __construct(
         private readonly UpdateTransactionStatus $updateStatus,
+        private readonly ApplyTransaction $applyTransaction,
         private readonly TransactionAuthorizer $authorizer,
         private readonly TransactionRepository $repository,
         private readonly ApprovationTimedOut $timedOut,
@@ -32,16 +35,16 @@ class ApproveTransactions
      */
     public function handle(TransactionStored $event): void
     {
-        $transacitonId = new TransactionId($event->payload->serialize());
+        $transactionId = new TransactionId($event->payload->serialize());
 
         try {
-            $transaction = $this->repository->findById($transacitonId);
+            $transaction = $this->repository->findById($transactionId);
         } catch (InvalidTransactionableException) {
             return;
         }
 
         if (! $transaction) {
-            throw InvalidTransaction::notFound($transacitonId);
+            throw InvalidTransaction::notFound($transactionId);
         }
 
         if (! $this->timedOut->check($transaction)) {
@@ -56,6 +59,13 @@ class ApproveTransactions
             throw InvalidTransaction::notApproved($transaction);
         }
 
-        $this->storeEvent->handle(EventType::TRANSACTION_APPROVED, new TransactionApprovedPayload($transacitonId));
+        DB::transaction(function () use ($transaction) {
+            $this->storeEvent->handle(
+                EventType::TRANSACTION_APPROVED,
+                new TransactionApprovedPayload($transaction->id)
+            );
+
+            $this->applyTransaction->updateFromTransaction($transaction);
+        });
     }
 }

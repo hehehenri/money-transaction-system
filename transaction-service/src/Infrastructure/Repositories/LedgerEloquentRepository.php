@@ -4,6 +4,7 @@ namespace Src\Infrastructure\Repositories;
 
 use Src\Infrastructure\Models\LedgerModel;
 use Src\Ledger\Domain\Repository\LedgerRepository;
+use Src\Shared\ValueObjects\Money;
 use Src\Transactionables\Domain\ValueObjects\TransactionableId;
 
 class LedgerEloquentRepository implements LedgerRepository
@@ -19,5 +20,15 @@ class LedgerEloquentRepository implements LedgerRepository
             ->where('transactionable_id', $id)
             ->lockForUpdate()
             ->get();
+    }
+
+    public function addMoney(TransactionableId $id, Money $amount): void
+    {
+        $this->model->query()->increment('amount', $amount->value());
+    }
+
+    public function subMoney(TransactionableId $id, Money $amount): void
+    {
+        $this->model->query()->decrement('amount', $amount->value());
     }
 }

@@ -3,6 +3,7 @@
 namespace Src\Transactions\Application;
 
 use Illuminate\Support\Facades\DB;
+use Src\Ledger\Application\ApplyTransaction;
 use Src\Ledger\Application\BalanceChecker;
 use Src\Ledger\Application\LedgerLocker;
 use Src\Transactionables\Application\GetTransactionable;
@@ -23,7 +24,7 @@ class StoreTransaction
         private readonly LedgerLocker $locker,
         private readonly BalanceChecker $balanceChecker,
         private readonly GetTransactionable $getTransactionable,
-        private readonly TransactionAuthorizer $transactionAuthorizer,
+        private readonly ApplyTransaction $applyTransaction,
     ) {
     }
 
@@ -38,11 +39,7 @@ class StoreTransaction
         $receiver = $this->getTransactionable->byProvider($payload->receiverProviderId, $payload->receiverProvider)
             ->asReceiver();
 
-        $transaction = $this->createTransaction($payload, $sender, $receiver);
-
-        $this->transactionAuthorizer->handle($transaction);
-
-        return $transaction;
+        return $this->createTransaction($payload, $sender, $receiver);
     }
 
     private function createTransaction(
