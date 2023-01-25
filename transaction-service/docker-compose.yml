@@ -5,7 +5,7 @@ services:
     image: mysql:8
     command: --default-authentication-plugin=mysql_native_password
     ports:
-      - "3306:3306"
+      - "3307:3306"
     volumes:
       - mysql-data:/var/lib/mysql
       - ./migrations:/docker-entrypoint-initdb.d
@@ -16,7 +16,7 @@ services:
   redis:
     image: redis:7-alpine
     ports:
-      - "6379:6379"
+      - "6380:6379"
 
 volumes:
   mysql-data:
