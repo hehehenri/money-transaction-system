@@ -7,5 +7,5 @@ return [
     'notification' => [
         'service_uri' => 'http://o4d9z.mocklab.io/notify',
     ],
-    'aprovation_timeout' => 5 * 60
+    'aprovation_timeout' => 5 * 60,
 ];

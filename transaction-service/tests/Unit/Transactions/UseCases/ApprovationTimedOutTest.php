@@ -26,7 +26,7 @@ class ApprovationTimedOutTest extends TestCase
     {
         return [
             [5 * 60, true],
-            [4 * 60, false]
+            [4 * 60, false],
         ];
     }
 }

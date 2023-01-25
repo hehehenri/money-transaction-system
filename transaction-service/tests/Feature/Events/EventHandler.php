@@ -4,5 +4,4 @@ namespace Events;
 
 class EventHandler
 {
-
 }

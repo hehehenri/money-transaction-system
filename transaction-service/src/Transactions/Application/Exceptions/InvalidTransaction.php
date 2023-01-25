@@ -26,6 +26,6 @@ class InvalidTransaction extends Exception
 
     public static function timedOut(TransactionId $id): self
     {
-        return new self(sprintf('Transaction with ID<%s> timed out.'), $id);
+        return new self(sprintf('Transaction with ID<%s> timed out.', $id));
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Src\Infrastructure\Models;
 
+use Carbon\Carbon;
 use Database\Factories\TransactionFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -22,6 +23,7 @@ use Src\Transactions\Domain\ValueObjects\TransactionId;
  * @property TransactionStatus $status
  * @property TransactionableModel $sender
  * @property TransactionableModel $receiver
+ * @property Carbon $created_at
  */
 class TransactionModel extends Model
 {
