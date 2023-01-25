@@ -11,14 +11,17 @@ use Src\Infrastructure\Events\ValueObjects\Payloads\TransactionApprovedPayload;
 use Src\Transactionables\Domain\Exceptions\InvalidTransactionableException;
 use Src\Transactions\Application\Exceptions\InvalidTransaction;
 use Src\Transactions\Domain\Repositories\TransactionRepository;
+use Src\Transactions\Domain\UseCases\ApprovationTimedOut;
 use Src\Transactions\Domain\ValueObjects\TransactionId;
 
 class ApproveTransactions
 {
     public function __construct(
+        private readonly UpdateTransactionStatus $updateStatus,
         private readonly TransactionAuthorizer $authorizer,
         private readonly TransactionRepository $repository,
-        private readonly StoreEvent $storeEvent
+        private readonly ApprovationTimedOut $timedOut,
+        private readonly StoreEvent $storeEvent,
     ) {
     }
 
@@ -42,6 +45,12 @@ class ApproveTransactions
 
             if (! $transaction) {
                 throw InvalidTransaction::notFound($transacitonId);
+            }
+
+            if (! $this->timedOut->check($transaction)) {
+                $this->updateStatus->refusesTransaction($transaction);
+
+                return;
             }
 
             $approved = $this->authorizer->handle($transaction);

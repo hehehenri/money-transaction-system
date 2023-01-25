@@ -2,6 +2,7 @@
 
 namespace Src\Transactions\Domain\Entities;
 
+use DateTime;
 use Src\Shared\ValueObjects\Money;
 use Src\Transactionables\Domain\Entities\Receiver;
 use Src\Transactionables\Domain\Entities\Sender;
@@ -16,6 +17,7 @@ class Transaction
         public readonly Sender $sender,
         public readonly Money $amount,
         public readonly TransactionStatus $transactionStatus,
+        public readonly DateTime $createdAt
     ) {
     }
 }

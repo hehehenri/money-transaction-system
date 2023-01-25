@@ -23,4 +23,9 @@ class InvalidTransaction extends Exception
     {
         return new self(sprintf('A transaction with ID<%s> was not found.', $id));
     }
+
+    public static function timedOut(TransactionId $id): self
+    {
+        return new self(sprintf('Transaction with ID<%s> timed out.'), $id);
+    }
 }

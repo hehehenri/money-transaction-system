@@ -62,6 +62,7 @@ class TransactionModel extends Model
             $sender,
             new Money($this->amount),
             $this->status,
+            $this->created_at
         );
     }
 
