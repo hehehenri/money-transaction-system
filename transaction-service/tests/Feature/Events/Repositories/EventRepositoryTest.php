@@ -2,7 +2,6 @@
 
 namespace Events\Repositories;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 use Src\Infrastructure\Events\Repositories\EventRepository;
 use Src\Infrastructure\Events\ValueObjects\EventType;
@@ -14,8 +13,6 @@ use Tests\TestCase;
 /** @group test */
 class EventRepositoryTest extends TestCase
 {
-    use RefreshDatabase;
-
     public function testItGetsAllTheUnprocessableEvents(): void
     {
         $type = EventType::TRANSACTION_STORED;

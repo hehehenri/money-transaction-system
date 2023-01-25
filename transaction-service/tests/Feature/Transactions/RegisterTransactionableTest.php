@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Transactions;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Str;
 use Src\Infrastructure\Models\TransactionableModel;
 use Src\Transactionables\Domain\Enums\Provider;
@@ -10,8 +9,6 @@ use Tests\TestCase;
 
 class RegisterTransactionableTest extends TestCase
 {
-    use RefreshDatabase;
-
     /**
      * @param  string  $providerId
      * @param  Provider  $provider
