@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('transactionables', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->uuid('provider_id');
+            $table->uuid('provider_id')->unique();
             $table->string('provider');
         });
     }

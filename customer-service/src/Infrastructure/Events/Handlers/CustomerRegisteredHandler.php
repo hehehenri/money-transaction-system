@@ -39,7 +39,6 @@ class CustomerRegisteredHandler extends EventHandler
             DB::transaction(function () use ($event, $customer) {
                 $this->markAsProcessed($event);
                 $this->updateCustomerStatus->handle($customer->id, Status::ACTIVE);
-            });
        }
     }
 }
