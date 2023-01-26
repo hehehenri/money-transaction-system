@@ -4,6 +4,7 @@ namespace Src\Infrastructure\Repositories;
 
 use Src\Customer\Domain\DTOs\CreateCustomerDTO;
 use Src\Customer\Domain\Entities\Customer;
+use Src\Customer\Domain\Enums\Status;
 use Src\Customer\Domain\Repositories\CustomerRepository;
 use Src\Customer\Domain\ValueObjects\CustomerId;
 use Src\Customer\Domain\ValueObjects\Email;
@@ -46,5 +47,12 @@ class CustomerEloquentRepository implements CustomerRepository
         $customer = $this->model->query()->find($id);
 
         return $customer->intoEntity();
+    }
+
+    public function updateStatus(CustomerId $id, Status $status): void
+    {
+        $this->model
+            ->query()
+            ->update(['status', $status->value]);
     }
 }

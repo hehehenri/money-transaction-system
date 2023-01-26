@@ -6,7 +6,7 @@ use Src\Customer\Domain\ValueObjects\CustomerId;
 
 class CustomerRegisteredEventPayload implements EventPayload
 {
-    public function __construct(private readonly CustomerId $customerId)
+    public function __construct(public readonly CustomerId $customerId)
     {
     }
 
