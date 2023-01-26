@@ -1,24 +1,7 @@
 version: '3'
 
-networks:
-  money-transaction-system:
-
 services:
-  transactions-nginx:
-    image: nginx:stable-alpine
-    container_name: transactions-nginx
-    ports:
-        - "8000:80"
-    volumes:
-        - ./transaction-service/src:/var/www
-        - ./transaction-service/nginx/default.conf:/etc/nginx/conf.d/default.conf
-    depends_on:
-        - transactions-db
-        - transactions-cache
-    networks:
-        - money-transaction-system
-
-  transactions-db:
+ transactions-db:
     image: mysql:8
     container_name: transactions-db
     command: --default-authentication-plugin=mysql_native_password
@@ -30,30 +13,15 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: transactions
-    networks:
-        - money-transaction-system
 
   transactions-cache:
     image: redis:7-alpine
     ports:
       - "6380:6379"
-    networks:
-        - money-transaction-system
 
-  transactions-runner:
-    build:
-        context: ./transaction-service
-        dockerfile: Dockerfile
-    container_name: transactions_runner
-    volumes:
-        - ./transaction-service/src
-    ports:
-        - "9000:9000"
-    networks:
-        - money-transaction-system
-
-  customers-db:
+ customers-db:
     image: mysql:8
+    container_name: customers-db
     command: --default-authentication-plugin=mysql_native_password
     ports:
       - "3309:3306"
@@ -66,11 +34,13 @@ services:
 
   customers-cache:
     image: redis:7-alpine
+    container_name: customers-cache
     ports:
       - "6381:6379"
 
   shopkeepers-db:
     image: mysql:8
+    container_name: shopkeepers-db
     command: --default-authentication-plugin=mysql_native_password
     ports:
       - "3310:3306"
@@ -82,6 +52,7 @@ services:
       MYSQL_DATABASE: shopkeepers
 
   shopkeepers-cache:
+    container_name: shopkeepers-cache
     image: redis:7-alpine
     ports:
       - "6382:6379"
