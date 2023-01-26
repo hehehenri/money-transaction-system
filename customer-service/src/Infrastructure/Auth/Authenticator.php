@@ -33,7 +33,7 @@ class Authenticator
 
         $dto = new CreateTokenDTO(
             $token,
-            $customer->id,
+            $customer->email,
             now()->addSeconds($ttl)->toDateTime()
         );
 

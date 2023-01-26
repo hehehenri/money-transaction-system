@@ -23,7 +23,7 @@ class GetBalanceResponse implements Response
          *          }
          *      } $jsonResponse
          */
-        $jsonResponse = json_decode($response->getBody());
+        $jsonResponse = json_decode($response->getBody(), true);
 
         return new self(
             new CustomerId($jsonResponse['ledger']['transactionable']['provider_id']),

@@ -3,7 +3,9 @@
 namespace Src\Infrastructure\Models;
 
 use Carbon\Carbon;
+use Database\Factories\TokenFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -14,7 +16,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class TokenModel extends Model
 {
-    use HasUuids;
+    use HasUuids, HasFactory;
 
     protected $table = 'personal_access_tokens';
 
@@ -34,4 +36,9 @@ class TokenModel extends Model
     protected $casts = [
         'expires_at' => 'datetime',
     ];
+
+    protected static function newFactory(): TokenFactory
+    {
+        return new TokenFactory();
+    }
 }

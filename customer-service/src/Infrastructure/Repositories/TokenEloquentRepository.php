@@ -24,10 +24,10 @@ class TokenEloquentRepository implements TokenRepository
      */
     public function storeToken(CreateTokenDTO $payload): Token
     {
-        $customer = $this->repository->findById($payload->customerId);
+        $customer = $this->repository->findByEmail($payload->email);
 
         if (! $customer) {
-            throw InvalidTokenException::customerNotFound($payload->customerId);
+            throw InvalidTokenException::customerNotFound($payload->email);
         }
 
         /** @var TokenModel $token */

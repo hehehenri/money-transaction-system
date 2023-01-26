@@ -19,7 +19,7 @@ use Src\Infrastructure\Exceptions\AuthenticationException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Response as HttpResponse;
 
-class CustomerAuthController extends Controller
+class AuthController extends Controller
 {
     public function register(RegisterRequest $request, RegisterCustomer $registerCustomer, ResponseFactory $response): JsonResponse
     {

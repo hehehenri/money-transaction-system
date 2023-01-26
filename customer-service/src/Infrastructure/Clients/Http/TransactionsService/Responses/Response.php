@@ -6,5 +6,5 @@ use Psr\Http\Message\ResponseInterface;
 
 interface Response
 {
-    public static function deserialize(ResponseInterface $response): self;
+    public static function deserialize(ResponseInterface $jsonResponse): self;
 }

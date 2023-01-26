@@ -3,14 +3,15 @@
 namespace Src\Infrastructure\Clients\Http;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
-use Psr\Container\ContainerExceptionInterface;
+use GuzzleHttp\Exception\ServerException;
 use Psr\Http\Message\ResponseInterface;
 use Src\Infrastructure\Clients\CircuitBreaker\CircuitBreaker;
 use Src\Infrastructure\Clients\Http\Constraints\RequestPayload;
 use Src\Infrastructure\Clients\Http\Enums\Method;
+use Src\Infrastructure\Clients\Http\Exceptions\ExternalServiceException;
 use Src\Infrastructure\Clients\Http\Exceptions\RequestException;
-use Src\Infrastructure\Clients\Http\Exceptions\ResponseException;
 use Src\Infrastructure\Clients\Http\ValueObjects\URL;
 
 abstract class BaseClient
@@ -32,20 +33,24 @@ abstract class BaseClient
 
     /**
      * @throws RequestException
-     * @throws ResponseException
+     * @throws ExternalServiceException
+     * @throws ClientException
+     * @throws GuzzleException
      */
     protected function sendRequest(Method $method, URL $url, RequestPayload $payload): ResponseInterface
     {
         if (! $this->circuitBreaker->isAvailable()) {
-            throw RequestException::serviceIsUnavailable();
+            throw ExternalServiceException::serviceUnavailable();
         }
 
         try {
             $response = $this->request($method, $url, $payload);
-        } catch (GuzzleException|ContainerExceptionInterface) {
+        } catch (\InvalidArgumentException $e) {
+            throw RequestException::invalidFormat($e);
+        } catch (ServerException) {
             $this->circuitBreaker->handleFailure();
 
-            throw ResponseException::internalServerError();
+            throw ExternalServiceException::serviceUnavailable();
         }
 
         $this->circuitBreaker->handleSuccess();
@@ -56,9 +61,15 @@ abstract class BaseClient
     /** @throws GuzzleException */
     private function request(Method $method, URL $url, RequestPayload $payload): ResponseInterface
     {
+        /** @var int $timeout */
+        $timeout = config('infrastructure.http_client.timeout');
+
         return match ($method) {
-            Method::GET => $this->client->get($url),
-            Method::POST => $this->client->post($url, ['body' => json_encode($payload) ?: []])
+            Method::GET => $this->client->request($method->value, (string) $url, ['timeout' => $timeout]),
+            Method::POST => $this->client->request($method->value, (string) $url, [
+                'timeout' => $timeout,
+                'body' => json_encode($payload) ?: [],
+            ])
         };
     }
 }

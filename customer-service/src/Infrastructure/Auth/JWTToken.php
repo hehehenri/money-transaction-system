@@ -2,9 +2,9 @@
 
 namespace Src\Infrastructure\Auth;
 
+use Firebase\JWT\ExpiredException;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
-use Src\Auth\Domain\ValueObjects\Token;
 
 class JWTToken
 {
@@ -19,14 +19,22 @@ class JWTToken
         return JWT::encode($payload, $key, $algorithm);
     }
 
-    /** @return array<string, string> */
-    public static function decode(Token $token): array
+    /**
+     * @return array<string, string>
+     *
+     * @throws ExpiredException
+     */
+    public static function decode(string $token): array
     {
         /** @var string $key */
         $key = config('auth.jwt.key');
         /** @var string $algorithm */
         $algorithm = config('auth.jwt.algorithm', Algorithm::HS256->value);
 
-        return (array) JWT::decode($token->token, new Key($key, $algorithm));
+        if (str_starts_with($token, 'Bearer ')) {
+            $token = explode('Bearer ', $token)[1];
+        }
+
+        return (array) JWT::decode($token, new Key($key, $algorithm));
     }
 }

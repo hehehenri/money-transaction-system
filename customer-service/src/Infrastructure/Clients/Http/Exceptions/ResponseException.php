@@ -6,7 +6,7 @@ use Exception;
 
 class ResponseException extends Exception
 {
-    public static function internalServerError(): self
+    public static function externalServerError(): self
     {
         return new self('External service returned an internal server error.');
     }

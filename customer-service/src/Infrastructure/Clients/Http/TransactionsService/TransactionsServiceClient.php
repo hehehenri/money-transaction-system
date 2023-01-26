@@ -2,10 +2,12 @@
 
 namespace Src\Infrastructure\Clients\Http\TransactionsService;
 
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\GuzzleException;
 use Src\Infrastructure\Clients\Http\BaseClient;
+use Src\Infrastructure\Clients\Http\Exceptions\ExternalServiceException;
 use Src\Infrastructure\Clients\Http\Exceptions\InvalidURLException;
 use Src\Infrastructure\Clients\Http\Exceptions\RequestException;
-use Src\Infrastructure\Clients\Http\Exceptions\ResponseException;
 use Src\Infrastructure\Clients\Http\TransactionsService\Payloads\TransactionServicePayload;
 use Src\Infrastructure\Clients\Http\TransactionsService\Responses\Response;
 use Src\Infrastructure\Clients\Http\ValueObjects\URL;
@@ -23,12 +25,14 @@ class TransactionsServiceClient extends BaseClient
 
     /**
      * @throws RequestException
-     * @throws ResponseException
+     * @throws ExternalServiceException
      * @throws InvalidURLException
+     * @throws ClientException
+     * @throws GuzzleException
      */
     public function send(Endpoint $endpoint, TransactionServicePayload $payload): Response
     {
-        $url = URL::build($endpoint->method(), $this->baseUrl(), $payload);
+        $url = URL::build($endpoint, $this->baseUrl(), $payload);
 
         $response = parent::sendRequest($endpoint->method(), $url, $payload);
 

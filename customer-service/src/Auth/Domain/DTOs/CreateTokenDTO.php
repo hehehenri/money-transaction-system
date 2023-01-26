@@ -4,13 +4,13 @@ namespace Src\Auth\Domain\DTOs;
 
 use DateTime;
 use DateTimeInterface;
-use Src\Customer\Domain\ValueObjects\CustomerId;
+use Src\Customer\Domain\ValueObjects\Email;
 
 class CreateTokenDTO
 {
     public function __construct(
         public readonly string $token,
-        public readonly CustomerId $customerId,
+        public readonly Email $email,
         public readonly DateTime $expiresAt,
     ) {
     }
@@ -20,7 +20,7 @@ class CreateTokenDTO
     {
         return [
             'token' => $this->token,
-            'customer_id' => $this->customerId->value(),
+            'customer_id' => (string) $this->email,
             'expires_at' => $this->expiresAt->format(DateTimeInterface::RFC3339),
         ];
     }
