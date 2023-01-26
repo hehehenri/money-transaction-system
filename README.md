@@ -2,16 +2,28 @@
 
 ## - Registro de Cliente
 
-- Quando um cliente/usuário é registrado ao serviço de `customers`, ele também deve ser registrado ao serviço de `transactions`. A consistência do processo é garantida por estarmos utilizando o [padrão outbox](https://learn.microsoft.com/en-us/azure/architecture/best-practices/transactional-outbox-cosmos), como demonstrado no diagrama abaixo.
+- Quando um cliente/usuário é registrado ao serviço de `customers`, ele também deve ser registrado ao serviço de `transactions`. A consistência do processo é garantida por estarmos utilizando o [padrão outbox](https://learn.microsoft.com/en-us/azure/architecture/best-practices/transactional-outbox-cosmos).
 
 ```mermaid
 sequenceDiagram
 Customer App->>Customer Service: Register customer
 alt same transaction
-Customer Service->>Customer DB: Register the customer
+Customer Service->>Customer DB: Register the customer with a pending status
 Customer Service->>Customer DB: Save a CustomerRegisteredEvent
 end
+```
+- O processo gera um evento e se mantém esperando por seu processamento (um status de pendig por exêmplo). Quando o evento termina de ser processado, o status do processo é atualizado na mesma transação que marca o evento como processado.
 
+```mermaid
+sequenceDiagram
+Customer Background->>Customer DB: Get unprocessed events
+Customer Background->>Customer Background: Distpatch those events to their handlers
+Customer Background->>Transaction Service: Register Transactionable (Customer)
+Transaction Service->>Customer Background: Send success response
+alt same transaction
+Customer Background->>Customer DB: Mark CustomerRegisteredEvent as processed
+Customer Background->>Customer DB: Update customer status to active
+end
 ```
 
 
