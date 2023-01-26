@@ -2,12 +2,11 @@
 
 namespace Src\Infrastructure\Clients\Http\TransactionsService;
 
-use GuzzleHttp\Psr7\Response as GuzzleResponse;
+use Psr\Http\Message\ResponseInterface as GuzzleResponse;
 use Src\Infrastructure\Clients\Http\Enums\Method;
 use Src\Infrastructure\Clients\Http\TransactionsService\Responses\GetBalanceResponse;
 use Src\Infrastructure\Clients\Http\TransactionsService\Responses\RegisterCustomerResponse;
 use Src\Infrastructure\Clients\Http\TransactionsService\Responses\Response;
-use Src\Infrastructure\Events\ValueObjects\Payloads\EventPayload;
 
 enum Endpoint: string
 {

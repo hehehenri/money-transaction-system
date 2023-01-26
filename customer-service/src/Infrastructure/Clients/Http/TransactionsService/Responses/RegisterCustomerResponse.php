@@ -2,7 +2,7 @@
 
 namespace Src\Infrastructure\Clients\Http\TransactionsService\Responses;
 
-use GuzzleHttp\Psr7\Response;
+use Psr\Http\Message\ResponseInterface;
 use Src\Customer\Domain\ValueObjects\CustomerId;
 use Src\Shared\ValueObjects\Uuid;
 
@@ -15,7 +15,7 @@ class RegisterCustomerResponse implements \Src\Infrastructure\Clients\Http\Trans
     ) {
     }
 
-    public static function deserialize(Response $response): self
+    public static function deserialize(ResponseInterface $response): self
     {
         /** @var array<string, array<string, string>> $jsonResponse */
         $jsonResponse = json_decode($response->getBody(), true);

@@ -2,9 +2,9 @@
 
 namespace Src\Infrastructure\Clients\Http\TransactionsService\Responses;
 
-use GuzzleHttp\Psr7\Response as GuzzleResponse;
+use Psr\Http\Message\ResponseInterface;
 
 interface Response
 {
-    public static function deserialize(GuzzleResponse $response): self;
+    public static function deserialize(ResponseInterface $response): self;
 }

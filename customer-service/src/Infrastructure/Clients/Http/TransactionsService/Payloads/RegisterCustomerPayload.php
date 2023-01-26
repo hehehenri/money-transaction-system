@@ -3,7 +3,6 @@
 namespace Src\Infrastructure\Clients\Http\TransactionsService\Payloads;
 
 use Src\Customer\Domain\ValueObjects\CustomerId;
-use Src\Infrastructure\Clients\Http\Constraints\RequestPayload;
 
 class RegisterCustomerPayload implements TransactionServicePayload
 {
@@ -13,9 +12,13 @@ class RegisterCustomerPayload implements TransactionServicePayload
 
     public function jsonSerialize(): array
     {
+        /** @var string $provider */
+        $provider = config('services.current_service_name');
+
+
         return [
             'provider_id' => (string) $this->customerId,
-            'provider' => 'customers'
+            'provider' => $provider
         ];
     }
 }

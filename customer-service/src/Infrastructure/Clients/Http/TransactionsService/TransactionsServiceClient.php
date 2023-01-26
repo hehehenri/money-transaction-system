@@ -12,9 +12,13 @@ use Src\Infrastructure\Clients\Http\ValueObjects\URL;
 
 class TransactionsServiceClient extends BaseClient
 {
+    /** @throws InvalidURLException */
     function baseUrl(): URL
     {
-        return new URL('http://localhost:8001/');
+        /** @var string $transactionsUrl */
+        $transactionsUrl = config('services.transactions.base_url');
+
+        return new URL($transactionsUrl);
     }
 
     /**
@@ -33,6 +37,10 @@ class TransactionsServiceClient extends BaseClient
 
     function serviceName(): string
     {
-        return 'transactions-service';
+        /** @var string $serviceName */
+        $serviceName = config('services.transactions.service_name');
+
+        return $serviceName;
+
     }
 }

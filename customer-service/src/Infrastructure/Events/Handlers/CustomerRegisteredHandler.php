@@ -31,7 +31,7 @@ class CustomerRegisteredHandler extends EventHandler
 
             try {
                 $customer = $this->getCustomer->byId($payload->customerId);
-                $this->registerCustomer->handle($customer);
+                $this->registerCustomer->intoTransactionsService($customer);
             } catch (\Exception) {
                 continue;
             }
@@ -39,6 +39,7 @@ class CustomerRegisteredHandler extends EventHandler
             DB::transaction(function () use ($event, $customer) {
                 $this->markAsProcessed($event);
                 $this->updateCustomerStatus->handle($customer->id, Status::ACTIVE);
+            });
        }
     }
 }

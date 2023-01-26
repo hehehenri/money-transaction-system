@@ -13,9 +13,12 @@ class GetBalancePayload implements TransactionServicePayload
 
     public function jsonSerialize(): array
     {
+        /** @var string $provider */
+        $provider = config('services.current_service_name');
+
         return [
             'provider_id' => (string) $this->customerId,
-            'provider' => 'customers'
+            'provider' => $provider
         ];
     }
 }

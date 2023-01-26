@@ -2,7 +2,7 @@
 
 namespace Src\Infrastructure\Clients\Http\TransactionsService\Responses;
 
-use GuzzleHttp\Psr7\Response as GuzzleResponse;
+use Psr\Http\Message\ResponseInterface;
 use Src\Customer\Domain\ValueObjects\CustomerId;
 use Src\Shared\ValueObjects\Money;
 
@@ -14,16 +14,20 @@ class GetBalanceResponse implements Response
     ) {
     }
 
-    public static function deserialize(GuzzleResponse $response): self
+    public static function deserialize(ResponseInterface $response): self
     {
-        /** @var  $jsonResponse */
+        /**
+         * @var array{ledger: array{
+         *              balance: int,
+         *              transactionable:array<string, string>
+         *          }
+         *      } $jsonResponse
+         */
         $jsonResponse = json_decode($response->getBody());
 
-        $ledger = $jsonResponse['ledger'];
-
         return new self(
-            new CustomerId($ledger['transactionable']['provider_id']),
-            new Money((int) $ledger['balance']),
+            new CustomerId($jsonResponse['ledger']['transactionable']['provider_id']),
+            new Money((int) $jsonResponse['ledger']['balance']),
         );
 
     }

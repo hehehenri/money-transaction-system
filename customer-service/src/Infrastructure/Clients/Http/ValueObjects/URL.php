@@ -23,7 +23,11 @@ class URL extends StringValueObject
     public static function build(Method $method, string $url, ?RequestPayload $payload = null): self
     {
         if ($method === Method::GET) {
-            return new self(sprintf('%s?%s', $url, http_build_query($payload->jsonSerialize())));
+            if ($payload) {
+                return new self(sprintf('%s?%s', $url, http_build_query($payload->jsonSerialize())));
+            }
+
+            return new self($url);
         }
 
         return new self($url);

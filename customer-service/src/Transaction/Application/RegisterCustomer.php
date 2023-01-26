@@ -21,7 +21,7 @@ class RegisterCustomer
      * @throws ResponseException
      * @throws InvalidURLException
      */
-    public function handle(Customer $customer): void
+    public function intoTransactionsService(Customer $customer): void
     {
         $payload = new RegisterCustomerPayload($customer->id);
 

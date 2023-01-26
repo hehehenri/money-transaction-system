@@ -26,7 +26,10 @@ abstract class BaseClient
     public function __construct()
     {
         $this->circuitBreaker = new CircuitBreaker($this->serviceName());
-        $this->client = app(Client::class);
+
+        /** @var Client $client */
+        $client = app(Client::class);
+        $this->client = $client;
     }
 
     abstract function serviceName(): string;
@@ -54,18 +57,12 @@ abstract class BaseClient
         return $response;
     }
 
-    /**
-     * @throws ContainerExceptionInterface
-     * @throws GuzzleException
-     */
+    /** @throws GuzzleException */
     private function request(Method $method, URL $url, RequestPayload $payload): ResponseInterface
     {
-        /** @var ResponseInterface $response */
-        $response = match ($method) {
+        return match ($method) {
             Method::GET => $this->client->get($url),
-            Method::POST => $this->client->post($url, json_encode($payload) ?? [])
+            Method::POST => $this->client->post($url, ['body' => json_encode($payload) ?: []])
         };
-
-        return $response;
     }
 }
