@@ -1,50 +1,36 @@
-# Problemas de Consistência
+## Garantindo a consistênca em processos que não dependem apenas deles mesmos.
 
-## Envio do email de confirmação:
+### **Registro de Cliente**
 
-- Pior caso: Uma transação é criada, aprovada e antes do serviço de envio de emails ser chamado, o serviço cai.
-- Consequência: Quando o serviço subir novamente, o processo da criação da transação já vai ter se encerrado.
-Consequentemente o email de confirmação nunca vai ser enviado.
-- Solução: Criar um evento de criação de transação quando uma transação é recebida e processada. Um processo rodando em
-background vai buscar por eventos de transação, chamar o serviço de envio de email e marcar o evento como processado.
-- Referências: https://learn.microsoft.com/en-us/azure/architecture/best-practices/transactional-outbox-cosmos
-
-Comunicar com o serviço de aprovação de transações
-
-- Pior caso: O serviço está offline devido a muitas requisições feitas pelo nosso serviço.
-- Consequências: Continuar enviando requisições pro serviço, impedindo que ele se recupere.
-- Solução: Implementar um circuit breaker aos clientes que comunicam com esse serviço externo.
-- Referências: https://martinfowler.com/bliki/CircuitBreaker.html
-
-# Linha do tempo dos principais eventos entre os sistemas
-
-## - Registro de Cliente
-
-- Quando um cliente/usuário é registrado ao serviço de `customers`, ele também deve ser registrado ao serviço de `transactions`. A consistência do processo é garantida por estarmos utilizando o [padrão outbox](https://learn.microsoft.com/en-us/azure/architecture/best-practices/transactional-outbox-cosmos).
+- Quando um cliente/usuário é registrado ao serviço de `customers`, ele também deve ser registrado ao serviço de `transactions`, o que normalmente não pode ser garantido, caso aconteçao uma eventual falha no segundo serviço. Para garantir a consistência entre esses serviços, foi aplicado o seguinte padrão:
 
 ```mermaid
 sequenceDiagram
 Customer App->>Customer Service: Register customer
-alt same transaction
-Customer Service->>Customer DB: Register the customer with a pending status
+alt happens at the same database transaction
+Customer Service->>Customer DB: Stores the customer with a pending status
 Customer Service->>Customer DB: Save a CustomerRegisteredEvent
 end
 ```
-- O processo gera um evento e se mantém esperando por seu processamento (um status de pendig por exêmplo). Quando o evento termina de ser processado, o status do processo é atualizado na mesma transação que marca o evento como processado.
+- O serviço gera um evento durante determinado processo (o registro de um cliente nesse exêmplo) e é interrompido, guardando seu estado atual.
 
 ```mermaid
 sequenceDiagram
 Customer Background->>Customer DB: Get unprocessed events
 Customer Background->>Customer Background: Distpatch those events to their handlers
 Customer Background->>Transaction Service: Register Transactionable (Customer)
-Transaction Service->>Customer Background: Send success response
-alt same transaction
+Transaction Service-->>Customer Background: Send success response
+alt happens at the same database transaction
 Customer Background->>Customer DB: Mark CustomerRegisteredEvent as processed
 Customer Background->>Customer DB: Update customer status to active
 end
 ```
 
-Esse mesmo processo foi aplicado pra garantir o envio do email de confirmação pro usuário que recebeu o pagamento.
+- Um processo rodando em background busca por eventos ainda não processados, envia para o serviço de `transactions`, garante o registro do cliente lá, e em uma mesma transação do banco de dados, marca tanto o evento como processado, quanto ativa o cliente.
+
+- Caso aconteça uma falha no envio do registro para o serviço de `transactions` o processo vai ser interrompido. Como o evento não foi marcado como terminado, nas próximas buscas por eventos não processados o evento vai ser retornado, até que possa ser concluido.
+
+O mesmo processo, também conhecido como [Outbox Pattern](https://learn.microsoft.com/en-us/azure/architecture/best-practices/transactional-outbox-cosmos), foi aplicado no processo de envio de transações, garantindo o envio dos emails de confirmação.
 
 <!--
 ```mermaid
