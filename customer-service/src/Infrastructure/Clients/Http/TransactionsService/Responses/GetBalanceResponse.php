@@ -29,6 +29,5 @@ class GetBalanceResponse implements Response
             new CustomerId($jsonResponse['ledger']['transactionable']['provider_id']),
             new Money((int) $jsonResponse['ledger']['balance']),
         );
-
     }
 }

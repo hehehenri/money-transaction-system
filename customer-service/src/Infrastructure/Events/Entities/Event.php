@@ -11,11 +11,11 @@ use Src\Infrastructure\Events\ValueObjects\Payloads\EventPayload;
 abstract class Event
 {
     public function __construct(
-        public readonly EventId      $id,
-        public readonly EventType    $type,
+        public readonly EventId $id,
+        public readonly EventType $type,
         public readonly EventPayload $payload,
-        public readonly ?Carbon      $processedAt,
-        public readonly Carbon       $createdAt
+        public readonly ?Carbon $processedAt,
+        public readonly Carbon $createdAt
     ) {
     }
 

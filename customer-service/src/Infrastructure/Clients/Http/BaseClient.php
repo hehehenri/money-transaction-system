@@ -4,9 +4,7 @@ namespace Src\Infrastructure\Clients\Http;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
-use GuzzleHttp\Psr7\Request;
 use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use Psr\Http\Message\ResponseInterface;
 use Src\Infrastructure\Clients\CircuitBreaker\CircuitBreaker;
 use Src\Infrastructure\Clients\Http\Constraints\RequestPayload;
@@ -14,8 +12,6 @@ use Src\Infrastructure\Clients\Http\Enums\Method;
 use Src\Infrastructure\Clients\Http\Exceptions\RequestException;
 use Src\Infrastructure\Clients\Http\Exceptions\ResponseException;
 use Src\Infrastructure\Clients\Http\ValueObjects\URL;
-use Src\Infrastructure\Clients\Http\ValueObjects\Body;
-use Src\Infrastructure\Clients\Http\ValueObjects\URI;
 
 abstract class BaseClient
 {
@@ -32,7 +28,7 @@ abstract class BaseClient
         $this->client = $client;
     }
 
-    abstract function serviceName(): string;
+    abstract public function serviceName(): string;
 
     /**
      * @throws RequestException

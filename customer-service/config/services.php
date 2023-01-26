@@ -36,5 +36,5 @@ return [
         'service_name' => 'transactions-service',
     ],
 
-    'current_service_name' => env('SERVICE_NAME', 'customers')
+    'current_service_name' => env('SERVICE_NAME', 'customers'),
 ];

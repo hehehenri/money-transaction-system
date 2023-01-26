@@ -13,7 +13,7 @@ use Src\Infrastructure\Clients\Http\ValueObjects\URL;
 class TransactionsServiceClient extends BaseClient
 {
     /** @throws InvalidURLException */
-    function baseUrl(): URL
+    public function baseUrl(): URL
     {
         /** @var string $transactionsUrl */
         $transactionsUrl = config('services.transactions.base_url');
@@ -35,12 +35,11 @@ class TransactionsServiceClient extends BaseClient
         return $endpoint->deserializeResponse($response);
     }
 
-    function serviceName(): string
+    public function serviceName(): string
     {
         /** @var string $serviceName */
         $serviceName = config('services.transactions.service_name');
 
         return $serviceName;
-
     }
 }

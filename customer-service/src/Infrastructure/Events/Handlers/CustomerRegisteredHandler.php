@@ -22,7 +22,7 @@ class CustomerRegisteredHandler extends EventHandler
         parent::__construct($eventRepository);
     }
 
-    /** @param array<CustomerRegistered> $events */
+    /** @param  array<CustomerRegistered>  $events */
     public function handle(array $events): void
     {
         foreach ($events as $event) {
@@ -40,6 +40,6 @@ class CustomerRegisteredHandler extends EventHandler
                 $this->markAsProcessed($event);
                 $this->updateCustomerStatus->handle($customer->id, Status::ACTIVE);
             });
-       }
+        }
     }
 }

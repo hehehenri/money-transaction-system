@@ -15,10 +15,9 @@ class RegisterCustomerPayload implements TransactionServicePayload
         /** @var string $provider */
         $provider = config('services.current_service_name');
 
-
         return [
             'provider_id' => (string) $this->customerId,
-            'provider' => $provider
+            'provider' => $provider,
         ];
     }
 }

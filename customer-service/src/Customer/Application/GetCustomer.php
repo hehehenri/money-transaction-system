@@ -6,7 +6,6 @@ use Src\Customer\Domain\Entities\Customer;
 use Src\Customer\Domain\Repositories\CustomerRepository;
 use Src\Customer\Domain\ValueObjects\CustomerId;
 use Src\Infrastructure\Exceptions\InvalidCustomerException;
-use Src\Infrastructure\Models\CustomerModel;
 
 class GetCustomer
 {

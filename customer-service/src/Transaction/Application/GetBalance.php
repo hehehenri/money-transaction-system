@@ -3,7 +3,6 @@
 namespace Src\Transaction\Application;
 
 use Src\Customer\Domain\Entities\Customer;
-use Src\Customer\Domain\ValueObjects\CustomerId;
 use Src\Infrastructure\Clients\Http\TransactionsService\Endpoint;
 use Src\Infrastructure\Clients\Http\TransactionsService\Payloads\GetBalancePayload;
 use Src\Infrastructure\Clients\Http\TransactionsService\Responses\GetBalanceResponse;
