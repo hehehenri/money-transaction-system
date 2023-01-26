@@ -1,6 +1,6 @@
 <?php
 
-namespace Src\Transactionables\Presentation\Requests;
+namespace Src\Transactionables\Presentation\FormRequests;
 
 use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
