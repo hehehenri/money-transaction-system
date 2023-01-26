@@ -2,6 +2,7 @@
 
 namespace Src\Ledger\Domain\Repository;
 
+use Src\Ledger\Domain\DTOs\LedgerDTO;
 use Src\Ledger\Domain\Entities\Ledger;
 use Src\Shared\ValueObjects\Money;
 use Src\Transactionables\Domain\Entities\Transactionable;
@@ -16,4 +17,6 @@ interface LedgerRepository
     public function subMoney(TransactionableId $id, Money $balance): void;
 
     public function getByTransactionable(Transactionable $id): ?Ledger;
+
+    public function create(LedgerDTO $dto): Ledger;
 }

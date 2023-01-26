@@ -3,6 +3,7 @@
 namespace Src\Infrastructure\Repositories;
 
 use Src\Infrastructure\Models\LedgerModel;
+use Src\Ledger\Domain\DTOs\LedgerDTO;
 use Src\Ledger\Domain\Entities\Ledger;
 use Src\Ledger\Domain\Repository\LedgerRepository;
 use Src\Shared\ValueObjects\Money;
@@ -43,5 +44,15 @@ class LedgerEloquentRepository implements LedgerRepository
             ->first();
 
         return $ledger?->intoEntity();
+    }
+
+    public function create(LedgerDTO $dto): Ledger
+    {
+        /** @var LedgerModel $ledgerModel */
+        $ledgerModel = $this->model
+            ->query()
+            ->create($dto->jsonSerialize());
+
+        return $ledgerModel->intoEntity();
     }
 }
