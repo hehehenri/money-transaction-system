@@ -44,9 +44,9 @@ Customer Background->>Customer DB: Update customer status to active
 end
 ```
 
-O mesmo processo
+Esse mesmo processo foi aplicado pra garantir o envio do email de confirmação pro usuário que recebeu o pagamento.
 
-
+<!--
 ```mermaid
 sequenceDiagram
 Customer App->>Customer Service: Send money
@@ -70,4 +70,4 @@ Customer Background Worker->>Transactions Data Store: Mark events as processed
 Customer Background Worker->>Customer Data Store: Return transactions which notifications have not been sent yet
 Customer Background Worker->>Email Bus: Publish transactions
 Customer Background Worker->>Customer Data Store: Mark transactions as their notifications were have been sent.
-```
+``` -->
