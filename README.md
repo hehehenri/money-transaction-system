@@ -16,6 +16,10 @@
         - [Listar transações](#listar-transações)
         - [Enviar transação](#registrar-transação)
 
+- [O que pode ser melhorado](#o-que-pode-ser-melhorado)
+    - [Escalabilidade](#escalabilidade)
+    - [Serviço de lojistas](#serviço-de-lojistas)
+
 
 ## Usuários
 ---
@@ -204,9 +208,29 @@ Header: `Authorization: Bearer`
 Payload:
 ```json
 {
-    "//tipos válidos de receivers": "customer ou shopkeeper",
     "receiver_type": "customer",
     "receiver_id": "receiver-uuid",
     "amount": 5000
 }
 ```
+`PS: Tipos válidos de receivers: customer ou shopkeeper`
+
+## O que pode ser melhorado
+
+### Escalabilidade
+
+Com a estrutura atual do projeto, o sistema não pode ser escalado horizontalmente. Se múltiplos nós forem criados executando diferentes processos do mesmo serviço, dados duplicados e outros tipos de inconsistências eventualmente acontencerão.
+
+Basicamente, isso acontece pois o sistema não está preparado para escritas e leituras concorrentes. Nada garante que se duas transações forem criadas a partir de um mesmo usuário, a verificação do saldo desse usuário aconteça antes da atualização feita por uma transação.  Ou seja, dinheiro foi gerado do nada.
+
+O mesmo acontece para o comando que verifica por eventos não processados. Se ambos os comandos dos processos rodarem ao mesmo tempo, um evento pode ser marcado como processado, mas já estar sendo executado pelo outro processo.
+
+Infelizmente não sei como resolver esses problemas e não tenho tempo suficiente para isso no momento, mas pretendo sim voltar aqui no futuro e fazer os ajustes necessários.
+
+### Serviço de lojistas
+
+Consegui terminar a tempo os serviços de clientes e transações, mas infelizmente não foi possivel terminar o servço responsável pelos lojistas. Não acho que seja um problema muito grave, já que esse serviço é basicamente um espelho do serviço de clientes, e o que muda é apenas o nome do serviço.
+
+- Mas Henri, se esses serviços são tão parecidos, por que tu não manteve eles juntos?
+
+Não sou o maior fã do cara, mas lembro de ter lido em `Arquitetura Limpa - Bob. Martin` a ideia de que mesmo coisas sendo parecidas, elas podem ser diferentes, e pode valer a pena separá-las. Isso faz bastante sentido pra mim, e acho que em algum momento no futuro dessa aplicação, regras de negócio do cliente não farão sentido para o lojista, e vice-versa.
