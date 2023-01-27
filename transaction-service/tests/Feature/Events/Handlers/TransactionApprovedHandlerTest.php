@@ -40,8 +40,6 @@ class TransactionApprovedHandlerTest extends TestCase
             /** @var EventModel $event */
             $event = EventModel::query()->find($event->id);
 
-            dump($event->id);
-
             $this->assertNotNull($event->processed_at);
         }
     }

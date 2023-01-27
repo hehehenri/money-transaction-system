@@ -2,7 +2,9 @@
 
 namespace Src\Infrastructure\Clients\Http\CircuitBreaker;
 
+use Exception;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class CircuitBreaker
 {
@@ -16,7 +18,19 @@ class CircuitBreaker
 
     public function isAvailable(): bool
     {
-        return ! $this->isOpen();
+        $isAvailable = ! $this->isOpen();
+
+        if (! $isAvailable) {
+            /** @phpstan-ignore-next-line  */
+            Log::error(json_encode([
+                'circuit_breaker' => [
+                    'service' => $this->service,
+                    'context' => 'Service unavailable.',
+                ],
+            ]));
+        }
+
+        return $isAvailable;
     }
 
     public function handleFailure(): void
@@ -27,17 +41,25 @@ class CircuitBreaker
             return;
         }
 
-        $this->incrementErrors();
+        try {
+            $this->incrementErrors();
 
-        if ($this->reachedErrorThreshold() && ! $this->isOpen()) {
-            $this->openCircuit();
+            if ($this->reachedErrorThreshold() && ! $this->isOpen()) {
+                $this->openCircuit();
+            }
+        } catch (Exception) {
+            // Don't throw propagate if cache is down
         }
     }
 
     public function handleSuccess(): void
     {
         if (! $this->isHalfOpen()) {
-            $this->reset();
+            try {
+                $this->reset();
+            } catch (Exception) {
+                // Don't propagate exception if cache is down
+            }
 
             return;
         }
@@ -51,12 +73,24 @@ class CircuitBreaker
 
     private function isOpen(): bool
     {
-        return (bool) Cache::get($this->getKey(Key::OPEN), 0);
+        try {
+            $isOpen = Cache::get($this->getKey(Key::OPEN), 0);
+        } catch (Exception) {
+            // Returns false in case the cache is offline, so it won't block client calls.
+            return false;
+        }
+
+        return (bool) $isOpen;
     }
 
     private function isHalfOpen(): bool
     {
-        $isHalfOpen = (bool) Cache::get($this->getKey(Key::HALF_OPEN), 0);
+        try {
+            $isHalfOpen = (bool) Cache::get($this->getKey(Key::HALF_OPEN), 0);
+        } catch (Exception) {
+            // Returns false in case the cache is offline, so it won't block client calls.
+            return false;
+        }
 
         return ! $this->isOpen() && $isHalfOpen;
     }
@@ -106,6 +140,14 @@ class CircuitBreaker
 
     private function setOpenCircuit(): void
     {
+        /** @phpstan-ignore-next-line  */
+        Log::error(json_encode([
+            'circuit_breaker' => [
+                'service' => $this->service,
+                'context' => 'Reached limit threshold and opened.',
+            ],
+        ]));
+
         Cache::put(
             $this->getKey(Key::OPEN),
             time(),
@@ -115,6 +157,14 @@ class CircuitBreaker
 
     private function setHalfOpenCircuit(): void
     {
+        /** @phpstan-ignore-next-line  */
+        Log::error(json_encode([
+            'circuit_breaker' => [
+                'service' => $this->service,
+                'context' => 'Circuit turned half-open.',
+            ],
+        ]));
+
         Cache::put(
             $this->getKey(Key::HALF_OPEN),
             time(),
