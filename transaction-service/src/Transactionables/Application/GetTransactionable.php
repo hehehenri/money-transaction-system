@@ -32,9 +32,23 @@ class GetTransactionable
     /**
      * @throws InvalidTransactionableException
      */
-    public function byTransaction(TransactionId $id): Transactionable
+    public function senderByTransaction(TransactionId $id): Transactionable
     {
-        $transactionable = $this->repository->getByTransactionId($id);
+        $transactionable = $this->repository->getSenderByTransactionId($id);
+
+        if (! $transactionable) {
+            throw InvalidTransactionableException::transactionNotFound($id);
+        }
+
+        return $transactionable;
+    }
+
+    /**
+     * @throws InvalidTransactionableException
+     */
+    public function receiverByTransaction(TransactionId $id): Transactionable
+    {
+        $transactionable = $this->repository->getReceiverByTransactionId($id);
 
         if (! $transactionable) {
             throw InvalidTransactionableException::transactionNotFound($id);

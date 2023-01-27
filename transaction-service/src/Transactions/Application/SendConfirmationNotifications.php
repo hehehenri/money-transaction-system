@@ -25,11 +25,11 @@ class SendConfirmationNotifications
     {
         $transactionId = new TransactionId($event->payload->serialize());
 
-        $transactionable = $this->getTransactionable->byTransaction($transactionId);
+        $receiver = $this->getTransactionable->receiverByTransaction($transactionId);
 
         /** @phpstan-ignore-next-line */
-        DB::transaction(function () use ($transactionable, $event) {
-            DispatchConfirmationNotification::dispatch($transactionable);
+        DB::transaction(function () use ($receiver, $event) {
+            DispatchConfirmationNotification::dispatch($receiver);
 
             $this->repository->markAsProcessed($event);
         });

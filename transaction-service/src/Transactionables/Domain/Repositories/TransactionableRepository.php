@@ -15,7 +15,9 @@ interface TransactionableRepository
 
     public function get(ProviderId $providerId, Provider $provider): ?Transactionable;
 
-    public function getByTransactionId(TransactionId $id): ?Transactionable;
+    public function getSenderByTransactionId(TransactionId $id): ?Transactionable;
+
+    public function getReceiverByTransactionId(TransactionId $id): ?Transactionable;
 
     public function getById(TransactionableId $id): ?Transactionable;
 }

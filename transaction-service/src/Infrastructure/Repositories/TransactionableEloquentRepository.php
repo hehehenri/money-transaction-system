@@ -42,7 +42,7 @@ class TransactionableEloquentRepository implements TransactionableRepository
         return $transactionable?->intoEntity();
     }
 
-    public function getByTransactionId(TransactionId $id): ?Transactionable
+    public function getSenderByTransactionId(TransactionId $id): ?Transactionable
     {
         /** @var ?TransactionModel $transaction */
         $transaction = $this->transactionModel
@@ -51,6 +51,17 @@ class TransactionableEloquentRepository implements TransactionableRepository
             ->first();
 
         return $transaction?->sender->intoEntity();
+    }
+
+    public function getReceiverByTransactionId(TransactionId $id): ?Transactionable
+    {
+        /** @var ?TransactionModel $transaction */
+        $transaction = $this->transactionModel
+            ->query()
+            ->whereKey((string) $id)
+            ->first();
+
+        return $transaction?->receiver->intoEntity();
     }
 
     public function getById(TransactionableId $id): ?Transactionable
