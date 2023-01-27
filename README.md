@@ -1,24 +1,39 @@
 # Um Sistema Distribuido de Transações Monetárias
 
-## Sobre o projeto
+## Index
+- [Usuários](#usuários)
+- [Transações](#transações)
+- [Garantindo Consistência](#garantindo-consistênca-kinda)
+    - [Registro de clientes](#registro-de-cliente)
+    - [Lidando com serviços externos](#lidando-com-serviços-externos-não-disponíveis)
+- [Como rodar o sistema](#como-rodar-o-sistema)
+- [Endpoints](#endpoints)
+    - [Autenticação do usuário](#autenticação-de-usuários)
+        - [Login do usuário](#login)
+        - [Registro do usuário](#registro)
+    - [Transações do usuário](#transações-do-usuário)
+        - [Saldo](#saldo)
+        - [Listar transações](#listar-transações)
+        - [Enviar transação](#registrar-transação)
 
-### Overview
+
+## Usuários
 ---
 
 Esse sistema permite o cadastro de usuários do tipo cliente e lojista. Ambos possuem uma carteira com dinheiro e podem realizar transações entre si. Uma notificação de confirmação é enviada para quem recebeu esse dinheiro quando a transação é aprovada com sucesso. Foi definido que lojistas não podem efetuar transações, apenas recebe-las.
 
 O usuário final não tem nenhum contato com o serviço de transações, ele se comunica apenas com seu serviço, onde ele executa as ações necessárias entre o serviço do usuário e o de transações para realizar esse processo.
 
-### Processo de registro de transações
+## Transações
 ---
 
 Transações são criadas com um status de `PENDING`, e o saldo dos usuários referentes a essa transação não é atualziado de cara. A aprovação das transações criadas acontece utilizando um serviço externo, e o saldo dos usuários é finalmente atualizado. Utilizei essa estrutura imaginando que esse autenticador externo (que hoje em dia é apenas um mock), precisaria das informações concretas da transação.
 
-Se eu não armazenasse a transação, à enviasse pro autenticador, e meu serviço caísse, o serviço externo teria autenticado uma transação que não existe, e precisaria ser feita novamente.
+Se a transação não fosse armazenada, fosse enviada direto para o autenticador e meu serviço caísse, o serviço externo teria autenticado uma transação que não existe e que precisaria ser feita novamente. Logo, caso esse autenticador guardasse algum tipo de estado, as informações armazenadas sobre essa transação estariam duplicadas.
 
-Eu poderia utilizar DB Transacitons para garantir essa consistência, mas já que na minha hipótese, esse serviço seria algo externo à minha aplicação e consequentemente as requisições seriam mais demoradas, eu preferi separar esse processo para não travar a transação e não manter a conexão aberta por muito tempo.
+Eu poderia utilizar transações do banco de dados (Database Transactions mesmo, não confunda com as transações do sistema lol) para garantir essa consistência, mas já que na minha hipótese esse serviço seria algo externo à minha aplicação e consequentemente as requisições seriam mais lentas, preferi separar esse processo para não travar a transação e não manter a conexão aberta por muito tempo.
 
-## Garantindo a consistênca em processos que não dependem apenas deles mesmos.
+## Garantindo consistênca (kinda)
 
 ### **Registro de Cliente**
 
@@ -122,8 +137,10 @@ php arisan serve --port 8000
 
 ## Endpoints
 
-Autenticação de clientes:
 
+### Autenticação de usuários:
+---
+#### Registro
 POST `http://customers-base-url/customer/auth/register`
 
 Payload:
@@ -136,9 +153,8 @@ Payload:
     "password_confirmation": "strong_password"
 }
 ```
-
+#### Login:
 POST `https://customers-base-url/customer/auth/login`
-
 Payload:
 
 ```json
@@ -147,9 +163,10 @@ Payload:
     "provider": "customers"
 }
 ```
+### Transações do usuário:
 
-Transações do cliente:
-
+---
+#### Saldo
 GET: `https://customers-base-url/customer/wallet/balance`
 Header: `Authorization: Bearer`
 
@@ -160,6 +177,7 @@ Response:
 }
 ```
 
+#### Listar transações
 GET: `https://customers-base-url/customer/wallet/transaction`
 Header: `Authorization: Bearer`
 
@@ -179,6 +197,7 @@ Response:
 }
 ```
 
+#### Registrar transação
 POST: `https://customers-base-url/customer/wallet/transaction`
 Header: `Authorization: Bearer`
 
