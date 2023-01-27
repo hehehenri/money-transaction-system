@@ -44,6 +44,8 @@ Diagrama exêmplificando o processo:
 
 ![Diagrama do circuit breaker](https://martinfowler.com/bliki/images/circuitBreaker/sketch.png)
 
+Esse algorítimo foi aplicado à classe `BaseClient`, extendida por todos os clientes HTTP implementados no sistema. O estado do circuito é salvo em cache. Caso aconteça alguma falha eventual no Redis, a implementação é desativada, e todas as requests se comportarão normalmente.
+
 Referência: https://martinfowler.com/bliki/CircuitBreaker.html
 
 
