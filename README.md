@@ -1,5 +1,23 @@
 # Um Sistema Distribuido de Transações Monetárias
 
+## Sobre o projeto
+
+### Overview
+---
+
+Esse sistema permite o cadastro de usuários do tipo cliente e lojista. Ambos possuem uma carteira com dinheiro e podem realizar transações entre si. Uma notificação de confirmação é enviada para quem recebeu esse dinheiro quando a transação é aprovada com sucesso. Foi definido que lojistas não podem efetuar transações, apenas recebe-las.
+
+O usuário final não tem nenhum contato com o serviço de transações, ele se comunica apenas com seu serviço, onde ele executa as ações necessárias entre o serviço do usuário e o de transações para realizar esse processo.
+
+### Processo de registro de transações
+---
+
+Transações são criadas com um status de `PENDING`, e o saldo dos usuários referentes a essa transação não é atualziado de cara. A aprovação das transações criadas acontece utilizando um serviço externo, e o saldo dos usuários é finalmente atualizado. Utilizei essa estrutura imaginando que esse autenticador externo (que hoje em dia é apenas um mock), precisaria das informações concretas da transação.
+
+Se eu não armazenasse a transação, à enviasse pro autenticador, e meu serviço caísse, o serviço externo teria autenticado uma transação que não existe, e precisaria ser feita novamente.
+
+Eu poderia utilizar DB Transacitons para garantir essa consistência, mas já que na minha hipótese, esse serviço seria algo externo à minha aplicação e consequentemente as requisições seriam mais demoradas, eu preferi separar esse processo para não travar a transação e não manter a conexão aberta por muito tempo.
+
 ## Garantindo a consistênca em processos que não dependem apenas deles mesmos.
 
 ### **Registro de Cliente**
