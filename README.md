@@ -71,27 +71,31 @@ Requisitos básicos:
 - Git
 
 1. Clone o projeto
-```bash
+```sh
 git clone git@github.com:henri1i/money-transaction-system.git && cd money-transaction-system
 ```
 
 2. Execute os containers
-```bash
+```sh
 docker-compose up -d
 ```
 
 3. Copie os .envs em todos os serviços
-```
+```sh
 cp customer-service/.env.example customer-service/.env &&  cp transaction-service/.env.example transaction-service/.env
 ```
 PS: A variável `TRANSACTIONS_SERVICE_URL` precisa conter a url na qual esse servidor vai escutar por requisições.
 
-4. Rode ambos os serviços:
+4. Rode os seguintes comandos em todos os serviços:
+```sh
+cd transacion-service &&
+composer install
 ```
-cd transaction-service && php artisan serve --port 8000
+```sh
+php artisan migrate
 ```
 ```
-cd ../customers-service && php artinsa serve
+php arisan serve --port 8000
 ```
 
 5. Pronto! O sistema já está pronto para receber requisições.
