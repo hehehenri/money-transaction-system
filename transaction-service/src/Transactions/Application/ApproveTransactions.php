@@ -5,8 +5,7 @@ namespace Src\Transactions\Application;
 use DB;
 use Src\Infrastructure\Events\Application\StoreEvent;
 use Src\Infrastructure\Events\Entities\TransactionStored;
-use Src\Infrastructure\Events\Exceptions\InvalidEventTypeException;
-use Src\Infrastructure\Events\Exceptions\InvalidPayloadException;
+use Src\Infrastructure\Events\Repositories\EventRepository;
 use Src\Infrastructure\Events\ValueObjects\EventType;
 use Src\Infrastructure\Events\ValueObjects\Payloads\TransactionApprovedPayload;
 use Src\Ledger\Application\ApplyTransaction;
@@ -23,6 +22,7 @@ class ApproveTransactions
         private readonly ApplyTransaction $applyTransaction,
         private readonly TransactionAuthorizer $authorizer,
         private readonly TransactionRepository $repository,
+        private readonly EventRepository $eventRepository,
         private readonly ApprovationTimedOut $timedOut,
         private readonly StoreEvent $storeEvent,
     ) {
@@ -30,8 +30,6 @@ class ApproveTransactions
 
     /**
      * @throws InvalidTransaction
-     * @throws InvalidPayloadException
-     * @throws InvalidEventTypeException
      */
     public function handle(TransactionStored $event): void
     {
@@ -49,6 +47,7 @@ class ApproveTransactions
 
         if (! $this->timedOut->check($transaction)) {
             $this->updateStatus->refusesTransaction($transaction);
+            $this->eventRepository->markAsProcessed($event);
 
             return;
         }
@@ -56,17 +55,21 @@ class ApproveTransactions
         $approved = $this->authorizer->handle($transaction);
 
         if (! $approved) {
+            $this->eventRepository->markAsProcessed($event);
+
             throw InvalidTransaction::notApproved($transaction);
         }
 
         /** @phpstan-ignore-next-line */
-        DB::transaction(function () use ($transaction) {
+        DB::transaction(function () use ($transaction, $event) {
             $this->storeEvent->handle(
                 EventType::TRANSACTION_APPROVED,
                 new TransactionApprovedPayload($transaction->id)
             );
 
             $this->applyTransaction->updateFromTransaction($transaction);
+
+            $this->eventRepository->markAsProcessed($event);
         });
     }
 }

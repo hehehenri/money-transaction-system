@@ -20,8 +20,6 @@ class TransactionApprovedHandler extends EventHandler
             $sender = app(SendConfirmationNotifications::class);
 
             $sender->handle($event);
-
-            $this->markAsProcessed($event);
         }
     }
 }

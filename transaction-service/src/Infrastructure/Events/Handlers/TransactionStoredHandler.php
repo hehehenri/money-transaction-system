@@ -23,8 +23,6 @@ class TransactionStoredHandler extends EventHandler
             } catch (InvalidTransaction|Exception) {
                 return;
             }
-
-            $this->markAsProcessed($event);
         }
     }
 }
