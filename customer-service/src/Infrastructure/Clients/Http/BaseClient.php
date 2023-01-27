@@ -7,7 +7,7 @@ use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\ServerException;
 use Psr\Http\Message\ResponseInterface;
-use Src\Infrastructure\Clients\CircuitBreaker\CircuitBreaker;
+use Src\Infrastructure\Clients\Http\CircuitBreaker\CircuitBreaker;
 use Src\Infrastructure\Clients\Http\Constraints\RequestPayload;
 use Src\Infrastructure\Clients\Http\Enums\Method;
 use Src\Infrastructure\Clients\Http\Exceptions\ExternalServiceException;
