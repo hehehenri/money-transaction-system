@@ -3,8 +3,8 @@
 ## Index
 - [Usuários](#usuários)
 - [Transações](#transações)
-- [Garantindo Consistência](#garantindo-consistênca-kinda)
-    - [Registro de clientes](#registro-de-cliente)
+- [Garantindo Consistência](#garantindo-Consistência-kinda)
+    - [Registro de clientes](#registro-de-clientes)
     - [Lidando com serviços externos](#lidando-com-serviços-externos-não-disponíveis)
 - [Como rodar o sistema](#como-rodar-o-sistema)
 - [Endpoints](#endpoints)
@@ -37,9 +37,9 @@ Se a transação não fosse armazenada, fosse enviada direto para o autenticador
 
 Eu poderia utilizar transações do banco de dados (Database Transactions mesmo, não confunda com as transações do sistema lol) para garantir essa consistência, mas já que na minha hipótese esse serviço seria algo externo à minha aplicação e consequentemente as requisições seriam mais lentas, preferi separar esse processo para não travar a transação e não manter a conexão aberta por muito tempo.
 
-## Garantindo consistênca (kinda)
+## Garantindo Consistência (de certa forma)
 
-### **Registro de Cliente**
+### **Registro de Clientes**
 
 - Quando um cliente/usuário é registrado ao serviço de `customers`, ele também deve ser registrado ao serviço de `transactions`, o que normalmente não pode ser garantido, caso aconteçao uma eventual falha no segundo serviço. Para garantir a consistência entre esses serviços, foi aplicado o seguinte padrão:
 
@@ -51,7 +51,7 @@ Customer Service->>Customer DB: Armazena o cliente com um status de 'Pending'
 Customer Service->>Customer DB: Salva o evento CustomerRegisteredEvent
 end
 ```
-- O serviço gera um evento durante determinado processo (o registro de um cliente nesse exêmplo) e é interrompido, guardando seu estado atual.
+- O serviço gera um evento durante determinado processo (o registro de um cliente nesse exemplo) e é interrompido, guardando seu estado atual.
 
 ```mermaid
 sequenceDiagram
@@ -71,7 +71,7 @@ end
 
 O mesmo processo, também conhecido como [Outbox Pattern](https://learn.microsoft.com/en-us/azure/architecture/best-practices/transactional-outbox-cosmos), foi aplicado no processo de envio de transações, garantindo o envio dos emails de confirmação.
 
-## Lidando com serviços externos não disponíveis
+## Lidando com serviços externos indisponíveis
 
 Nossos processos muitas chamadas para processos dos quais eles dependem. Eventualmente, essa demanda pode acabar ficando maior do que esse serviço pode suportar, talvez alcance algum limite definido por esse serviço ou algum outro comportamento não esperado pode acontecer.
 
@@ -227,7 +227,7 @@ O mesmo acontece para o comando que verifica por eventos não processados. Se am
 
 Infelizmente não sei como resolver esses problemas e não tenho tempo suficiente para isso no momento, mas pretendo sim voltar aqui no futuro e fazer os ajustes necessários.
 
-### Serviço de lojistas
+### Serviço de lojista
 
 Consegui terminar a tempo os serviços de clientes e transações, mas infelizmente não foi possivel terminar o servço responsável pelos lojistas. Não acho que seja um problema muito grave, já que esse serviço é basicamente um espelho do serviço de clientes, e o que muda é apenas o nome do serviço.
 
