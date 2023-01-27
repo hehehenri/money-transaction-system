@@ -42,35 +42,127 @@ O cliente que implementa o circuit breaker possui três tipos de estados. Quando
 
 Diagrama exêmplificando o processo:
 
-![Diagrama do circuit breaker](https://martinfowler.com/bliki/images/circuitBreaker/sketch.png)
+```mermaid
+sequenceDiagram
+    participant A as Requestor
+    participant B as Server
+    participant C as Circuit Breaker
+    A->>B: Request
+    B->>C: Check circuit breaker
+    C-->>B: Circuit is closed
+    B->>A: Reject
+    A->>C: Request to open circuit
+    C-->>A: Circuit is open
+    A->>B: Request
+    B->>C: Check circuit breaker
+    C-->>B: Circuit is open
+    B->>A: Response![Diagrama do circuit breaker](https://martinfowler.com/bliki/images/circuitBreaker/sketch.png)
+```
 
 Esse algorítimo foi aplicado à classe `BaseClient`, extendida por todos os clientes HTTP implementados no sistema. O estado do circuito é salvo em cache. Caso aconteça alguma falha eventual no Redis, a implementação é desativada, e todas as requests se comportarão normalmente.
 
 Referência: https://martinfowler.com/bliki/CircuitBreaker.html
 
+## Como rodar o sistema
 
-<!--
-```mermaid
-sequenceDiagram
-Customer App->>Customer Service: Send money
-Customer Service->>Transaction Service: Send transaction
-Transaction Service->>Transaction Data Store: Lock for Update
-Transaction Service->>Transaction Data Store: Check if sender has enough balance
-Transaction Service->>External Authorization Service: Check if transaction is authorized
-Transaction Service->>Transaction Data Store: Begin Transaction
-Transaction Service->>Transaction Data Store: Insert Transaction
-Transaction Service->>Transaction Data Store: Insert TransactionCreatedEvent
-Transaction Service->>Transaction Data Store: Commit Transaction
-Transaction Service->>Transaction Data Store: Release Lock
-Transaction Service->>Customer Service: Return status
-Customer Service->>Customer App: Return status
-Customer Background Worker->>Transactions Data Store: Get outbox transactions
-Transactions Data Store->>Customer Background Worker: Return transaction events
-Customer Background Worker->>Customer Data Store: Begin transaction
-Customer Background Worker->>Customer Data Store: Sync from transaction events
-Customer Background Worker->>Customer Data Store: Commit transaction
-Customer Background Worker->>Transactions Data Store: Mark events as processed
-Customer Background Worker->>Customer Data Store: Return transactions which notifications have not been sent yet
-Customer Background Worker->>Email Bus: Publish transactions
-Customer Background Worker->>Customer Data Store: Mark transactions as their notifications were have been sent.
-``` -->
+Requisitos básicos:
+- PHP 8.1
+- Docker
+- Git
+
+1. Clone o projeto
+```bash
+git clone git@github.com:henri1i/money-transaction-system.git && cd money-transaction-system
+```
+
+2. Execute os containers
+```bash
+docker-compose up -d
+```
+
+3. Copie os .envs em todos os serviços
+```
+cp customer-service/.env.example customer-service/.env &&  cp transaction-service/.env.example transaction-service/.env
+```
+PS: A variável `TRANSACTIONS_SERVICE_URL` precisa conter a url na qual esse servidor vai escutar por requisições.
+
+4. Rode ambos os serviços:
+```
+cd transaction-service && php artisan serve --port 8000
+```
+```
+cd ../customers-service && php artinsa serve
+```
+
+5. Pronto! O sistema já está pronto para receber requisições.
+
+## Endpoints
+
+Autenticação de clientes:
+
+POST `http://customers-base-url/customer/auth/register`
+
+Payload:
+```json
+{
+    "full_name": "henri",
+    "cpf": "valid-cpf",
+    "email": "contact@henri1i.me",
+    "password": "strong_password",
+    "password_confirmation": "strong_password"
+}
+```
+
+POST `https://customers-base-url/customer/auth/login`
+
+Payload:
+
+```json
+{
+    "provider_id": "98517a01-940f-41e3-88ec-338e2dd758a9",
+    "provider": "customers"
+}
+```
+
+Transações do cliente:
+
+GET: `https://customers-base-url/customer/wallet/balance`
+Header: `Authorization: Bearer`
+
+Response:
+```json
+{
+    "balance": 0
+}
+```
+
+GET: `https://customers-base-url/customer/wallet/transaction`
+Header: `Authorization: Bearer`
+
+Response:
+```json
+{
+    "transactions": [
+        {
+            "id": "transaction-uuid",
+            "sender_id": "sender-uuid",
+            "receiver_id": "receiver-uuid",
+            "amount": 5000,
+        }
+    ],
+    "per_page": 15,
+    "page": 1
+}
+```
+
+POST: `https://customers-base-url/customer/wallet/transaction`
+Header: `Authorization: Bearer`
+
+Payload:
+```json
+{
+    "receiver_type": "customer", // pode ser "customer" ou "shopkeeper"
+    "receiver_id": "receiver-uuid",
+    "amount": 5000
+}
+```
