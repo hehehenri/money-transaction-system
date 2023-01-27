@@ -12,7 +12,7 @@ interface Paginator
     public function total();
 
     /**
-     * Get all of the items being paginated.
+     * Get all the items being paginated.
      *
      * @return array
      *

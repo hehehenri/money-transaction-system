@@ -22,7 +22,7 @@ class RegisterTransactionable
     {
         $transactionableDTO = new TransactionableDTO($payload->providerId, $payload->provider);
 
-        /** @phpstan-ignore-next-line  */
+        /** @phpstan-ignore-next-line */
         return DB::transaction(function () use ($transactionableDTO) {
             $transactionable = $this->repository->register($transactionableDTO);
 

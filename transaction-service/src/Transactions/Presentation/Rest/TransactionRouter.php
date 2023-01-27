@@ -12,7 +12,7 @@ class TransactionRouter extends RouteServiceProvider
     {
         Route::name('transaction.')->prefix('transaction')->group(function () {
             Route::get('/', [TransactionController::class, 'list'])->name('list');
-            Route::post('/store', [TransactionController::class, 'store'])->name('store');
+            Route::post('/', [TransactionController::class, 'store'])->name('store');
         });
     }
 }
