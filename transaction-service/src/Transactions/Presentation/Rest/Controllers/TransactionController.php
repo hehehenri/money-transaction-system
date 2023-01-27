@@ -8,6 +8,7 @@ use Illuminate\Http\JsonResponse;
 use Src\Transactionables\Application\Exceptions\InvalidTransactionableException as InvalidTransactionAppException;
 use Src\Transactionables\Domain\Exceptions\InvalidTransactionableException;
 use Src\Transactionables\Domain\Exceptions\TransactionableNotFoundException;
+use Src\Transactions\Application\Exceptions\InvalidTransaction;
 use Src\Transactions\Application\ListTransactions;
 use Src\Transactions\Application\StoreTransaction;
 use Src\Transactions\Presentation\Exceptions\InvalidPayloadException;
@@ -52,6 +53,8 @@ class TransactionController extends Controller
             $storeTransaction->handle($payload);
         } catch (InvalidTransactionableException|TransactionableNotFoundException $e) {
             return $response->json(['error' => $e->getMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
+        } catch (InvalidTransaction $e) {
+            return $response->json(['error' => $e->getMessage()], Response::HTTP_UNAUTHORIZED);
         }
 
         return $response->json(['message' => 'Your transaction was sent, and sooner will be received.'], Response::HTTP_OK);

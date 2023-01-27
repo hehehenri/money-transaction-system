@@ -29,6 +29,7 @@ class StoreTransaction
     /**
      * @throws InvalidTransactionableException
      * @throws TransactionableNotFoundException
+     * @throws InvalidTransaction
      */
     public function handle(StoreTransactionViewModel $payload): Transaction
     {
@@ -40,6 +41,7 @@ class StoreTransaction
         return $this->createTransaction($payload, $sender, $receiver);
     }
 
+    /** @throws InvalidTransaction */
     private function createTransaction(
         StoreTransactionViewModel $payload,
         Sender $sender,

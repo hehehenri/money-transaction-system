@@ -20,7 +20,7 @@ class LedgerController extends Controller
         try {
             $payload = ShowLedgerViewModel::fromRequest($request);
 
-            $ledger = $getLedger->byTransactionable($payload);
+            $ledger = $getLedger->byTransactionable($payload->providerId, $payload->provider);
         } catch (InvalidPayload|InvalidLedger $e) {
             return $response->json(['error' => $e->getMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
         } catch (TransactionableNotFoundException $e) {

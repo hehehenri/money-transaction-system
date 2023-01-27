@@ -93,6 +93,36 @@ class StoreTransactionsTest extends TestCase
             ->assertSee('cannot send transactions');
     }
 
+    public function testTransactionableCannotSendMoreMoneyThanTheyHave()
+    {
+        $this->authorize();
+
+        $sender = new TransactionableDTO(new ProviderId(Str::uuid()->toString()), Provider::CUSTOMERS);
+        $receiver = new TransactionableDTO(new ProviderId(Str::uuid()->toString()), Provider::SHOPKEEPERS);
+
+        /** @var TransactionableModel $senderModel */
+        $senderModel = TransactionableModel::factory($sender->jsonSerialize())->create();
+        /** @var TransactionableModel $receiverModel */
+        $receiverModel = TransactionableModel::factory($receiver->jsonSerialize())->create();
+
+        $sender = $senderModel->intoEntity()->asSender();
+        $receiver = $receiverModel->intoEntity()->asReceiver();
+
+        $money = new Money(50000);
+
+        $this->giveMoney($sender, $money);
+
+        $response = $this->route([
+            'sender_provider_id' => (string) $sender->providerId,
+            'sender_provider_name' => $sender->provider->value,
+            'receiver_provider_id' => (string) $receiver->providerId,
+            'receiver_provider_name' => $receiver->provider->value,
+            'amount' => $money->value() + 100000,
+        ]);
+
+        $response->assertUnauthorized();
+    }
+
     /**
      * @return array<string, array<TransactionableDTO|Money>>
      */
