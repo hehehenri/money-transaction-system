@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 
+/** @SuppressWarnings(PHPMD) */
 class RouteServiceProvider extends ServiceProvider
 {
     /**

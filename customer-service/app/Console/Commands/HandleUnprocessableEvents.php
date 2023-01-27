@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use Src\Infrastructure\Events\Repositories\EventRepository;
 use Src\Infrastructure\Events\ValueObjects\EventType;
 
+/** @SuppressWarnings(PHPMD) $e */
 class HandleUnprocessableEvents extends Command
 {
     protected $signature = 'events:handle';

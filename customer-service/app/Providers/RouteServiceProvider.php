@@ -7,6 +7,7 @@ use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvi
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 
+/** @SuppressWarnings(PHPMD.StaticAccess) */
 class RouteServiceProvider extends ServiceProvider
 {
     /**
@@ -35,6 +36,7 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function configureRateLimiting()
     {
+        /** @SuppressWarnings(PHPMD.StaticAccess) */
         RateLimiter::for('api', function (Request $request) {
             return Limit::perMinute(60)->by($request->user()?->id ?: $request->ip());
         });
