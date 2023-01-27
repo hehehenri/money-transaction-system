@@ -48,6 +48,7 @@ class StoreTransaction
         /** @var Transaction $transaction */
         $transaction = DB::transaction(function () use ($payload, $sender, $receiver) {
             $this->locker->lock($sender);
+            $this->locker->lock($receiver);
 
             $canSendAmount = $this->balanceChecker->canSendAmount($sender, $payload->amount);
 
