@@ -161,7 +161,8 @@ Header: `Authorization: Bearer`
 Payload:
 ```json
 {
-    "receiver_type": "customer", // pode ser "customer" ou "shopkeeper"
+    "//tipos válidos de receivers": "customer ou shopkeeper",
+    "receiver_type": "customer",
     "receiver_id": "receiver-uuid",
     "amount": 5000
 }
