@@ -5,7 +5,6 @@ namespace App\Providers;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\ServiceProvider;
 
-
 /** @SuppressWarnings(PHPMD) */
 class BroadcastServiceProvider extends ServiceProvider
 {
