@@ -6,23 +6,23 @@
 
 ```mermaid
 sequenceDiagram
-Customer App->>Customer Service: Register customer
-alt happens at the same database transaction
-Customer Service->>Customer DB: Stores the customer with a pending status
-Customer Service->>Customer DB: Save a CustomerRegisteredEvent
+Customer App->>Customer Service: Registra o cliente
+alt acontece na mesma transação do banco de dados
+Customer Service->>Customer DB: Armazena o cliente com um status de 'Pending'
+Customer Service->>Customer DB: Salva o evento CustomerRegisteredEvent
 end
 ```
 - O serviço gera um evento durante determinado processo (o registro de um cliente nesse exêmplo) e é interrompido, guardando seu estado atual.
 
 ```mermaid
 sequenceDiagram
-Customer Background->>Customer DB: Get unprocessed events
-Customer Background->>Customer Background: Distpatch those events to their handlers
-Customer Background->>Transaction Service: Register Transactionable (Customer)
-Transaction Service-->>Customer Background: Send success response
-alt happens at the same database transaction
-Customer Background->>Customer DB: Mark CustomerRegisteredEvent as processed
-Customer Background->>Customer DB: Update customer status to active
+Customer Background->>Customer DB: Busca por eventos ainda não processados
+Customer Background->>Customer Background: Dispara os eventos para seus handlers
+Customer Background->>Transaction Service: Registra o transacionável (cliente)
+Transaction Service-->>Customer Background: Envia responsta de sucesso
+alt acontece na mesma transação do banco de dados
+Customer Background->>Customer DB: Marca o evento CustomerRegisteredEvent como processado
+Customer Background->>Customer DB: Atualiza o status do cliente para ativo
 end
 ```
 
