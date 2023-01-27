@@ -8,16 +8,19 @@ use Src\Infrastructure\Clients\Http\TransactionsService\Responses\GetBalanceResp
 use Src\Infrastructure\Clients\Http\TransactionsService\Responses\GetTransactionsResponse\GetTransactionsResponse;
 use Src\Infrastructure\Clients\Http\TransactionsService\Responses\RegisterCustomerResponse;
 use Src\Infrastructure\Clients\Http\TransactionsService\Responses\Response;
+use Src\Infrastructure\Clients\Http\TransactionsService\Responses\SendTransactionResponse;
 
 enum Endpoint: string
 {
     case REGISTER_CUSTOMERS = '/transactionable/register';
     case GET_BALANCE = '/ledger';
     case GET_TRANSACTIONS = '/transaction';
+    case SEND_TRANSACTION = '/transaciton';
 
     public function method(): Method
     {
         return match ($this) {
+            self::SEND_TRANSACTION,
             self::REGISTER_CUSTOMERS => Method::POST,
             self::GET_BALANCE,
             self::GET_TRANSACTIONS => Method::GET,
@@ -30,6 +33,7 @@ enum Endpoint: string
             self::REGISTER_CUSTOMERS => RegisterCustomerResponse::deserialize($response),
             self::GET_BALANCE => GetBalanceResponse::deserialize($response),
             self::GET_TRANSACTIONS => GetTransactionsResponse::deserialize($response),
+            self::SEND_TRANSACTION => SendTransactionResponse::deserialize($response)
         };
     }
 }

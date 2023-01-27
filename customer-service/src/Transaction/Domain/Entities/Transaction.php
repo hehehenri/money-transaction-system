@@ -2,17 +2,17 @@
 
 namespace Src\Transaction\Domain\Entities;
 
-use Src\Customer\Domain\Entities\Customer;
 use Src\Shared\ValueObjects\Money;
-use Src\Transaction\Domain\ValueObjects\TransactionType;
+use Src\Transaction\Domain\ValueObjects\Transactionable;
+use Src\Transaction\Domain\ValueObjects\TransactionId;
 
 class Transaction
 {
     public function __construct(
-        public readonly Money $money,
-        public readonly Customer $customer,
-        public readonly TransactionType $type,
-        public readonly Transactionable $transactionable,
+        public readonly TransactionId $id,
+        public readonly Transactionable $from,
+        public readonly Transactionable $to,
+        public readonly Money $amount,
     ) {
     }
 }

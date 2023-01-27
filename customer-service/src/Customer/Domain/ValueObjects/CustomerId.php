@@ -2,6 +2,8 @@
 
 namespace Src\Customer\Domain\ValueObjects;
 
-final class CustomerId extends UserId
+use Src\Transaction\Domain\ValueObjects\TransactionableId;
+
+final class CustomerId extends TransactionableId
 {
 }

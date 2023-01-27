@@ -1,9 +1,6 @@
 <?php
 
-namespace Src\Transaction\Domain\Entities;
-
-use Src\Transaction\Domain\ValueObjects\TransactionableId;
-use Src\Transaction\Domain\ValueObjects\TransactionableType;
+namespace Src\Transaction\Domain\ValueObjects;
 
 class Transactionable
 {

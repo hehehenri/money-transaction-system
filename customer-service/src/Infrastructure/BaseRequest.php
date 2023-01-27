@@ -1,6 +1,6 @@
 <?php
 
-namespace Src\Transactionables\Presentation;
+namespace Src\Infrastructure;
 
 use Illuminate\Http\Request;
 

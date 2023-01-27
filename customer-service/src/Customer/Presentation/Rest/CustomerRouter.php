@@ -18,8 +18,9 @@ class CustomerRouter extends RouteServiceProvider
             });
 
             Route::prefix('wallet')->name('wallet.')->middleware('auth')->group(function () {
-                Route::get('/balance', [WalletController::class, 'balance'])->name('balance');
-                Route::get('/transactions', [WalletController::class, 'transactions'])->name('transactions');
+                Route::get('/balance', [WalletController::class, 'getBalance'])->name('balance');
+                Route::get('/transaction', [WalletController::class, 'getTransactions'])->name('get-transactions');
+                Route::post('/transaction', [WalletController::class, 'sendTransaction'])->name('send-transaction');
             });
         });
     }

@@ -6,7 +6,7 @@ use Psr\Http\Message\ResponseInterface;
 use Src\Customer\Domain\ValueObjects\CustomerId;
 use Src\Shared\ValueObjects\Uuid;
 
-class RegisterCustomerResponse implements \Src\Infrastructure\Clients\Http\TransactionsService\Responses\Response
+class RegisterCustomerResponse implements Response
 {
     public function __construct(
         public readonly Uuid $id,
@@ -15,12 +15,12 @@ class RegisterCustomerResponse implements \Src\Infrastructure\Clients\Http\Trans
     ) {
     }
 
-    public static function deserialize(ResponseInterface $response): self
+    public static function deserialize(ResponseInterface $jsonResponse): self
     {
-        /** @var array<string, array<string, string>> $jsonResponse */
-        $jsonResponse = json_decode($response->getBody(), true);
+        /** @var array<string, array<string, string>> $response */
+        $response = json_decode($jsonResponse->getBody(), true);
 
-        $transactionable = $jsonResponse['transactionable'];
+        $transactionable = $response['transactionable'];
 
         return new self(
             new Uuid($transactionable['id']),

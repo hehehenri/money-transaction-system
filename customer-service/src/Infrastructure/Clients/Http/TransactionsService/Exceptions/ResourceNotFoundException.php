@@ -11,4 +11,9 @@ class ResourceNotFoundException extends Exception
     {
         return new self(sprintf('A balance for the customer with ID<%s> was not found', $id));
     }
+
+    public static function transactionableNotFound(): self
+    {
+        return new self('One of the given transactionables was not found.');
+    }
 }
