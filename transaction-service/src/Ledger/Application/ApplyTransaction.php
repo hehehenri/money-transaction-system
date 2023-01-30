@@ -2,7 +2,7 @@
 
 namespace Src\Ledger\Application;
 
-use DB;
+use Illuminate\Support\Facades\DB;
 use Src\Ledger\Domain\Repository\LedgerRepository;
 use Src\Transactions\Domain\Entities\Transaction;
 
@@ -14,7 +14,6 @@ class ApplyTransaction
 
     public function updateFromTransaction(Transaction $transaction): void
     {
-        /** @phpstan-ignore-next-line */
         DB::transaction(function () use ($transaction) {
             $this->repository->addMoney($transaction->receiver->id, $transaction->amount);
             $this->repository->subMoney($transaction->sender->id, $transaction->amount);

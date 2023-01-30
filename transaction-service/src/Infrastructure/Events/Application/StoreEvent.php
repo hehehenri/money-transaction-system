@@ -18,7 +18,7 @@ class StoreEvent
      * @throws InvalidPayloadException
      * @throws InvalidEventTypeException
      */
-    public function handle(EventType $type, Payload $payload): void
+    public function store(EventType $type, Payload $payload): void
     {
         $this->repository->create($type, $payload);
     }

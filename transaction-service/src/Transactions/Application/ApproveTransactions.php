@@ -2,7 +2,7 @@
 
 namespace Src\Transactions\Application;
 
-use DB;
+use Illuminate\Support\Facades\DB;
 use Src\Infrastructure\Events\Application\StoreEvent;
 use Src\Infrastructure\Events\Entities\TransactionStored;
 use Src\Infrastructure\Events\Repositories\EventRepository;
@@ -60,9 +60,8 @@ class ApproveTransactions
             throw InvalidTransaction::notApproved($transaction);
         }
 
-        /** @phpstan-ignore-next-line */
         DB::transaction(function () use ($transaction, $event) {
-            $this->storeEvent->handle(
+            $this->storeEvent->store(
                 EventType::TRANSACTION_APPROVED,
                 new TransactionApprovedPayload($transaction->id)
             );
