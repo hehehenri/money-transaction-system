@@ -39,11 +39,6 @@ class RegisterTest extends TestCase
             ->assertUnprocessable();
     }
 
-    private function route(array $payload): TestResponse
-    {
-        return $this->postJson(route('customer.auth.register'), $payload);
-    }
-
     /** @return array<string, array<string, null|string>> */
     public function invalidPayload(): array
     {
@@ -54,5 +49,10 @@ class RegisterTest extends TestCase
             'small_password' => [['password' => 'small']],
             'null_values' => [['full_name' => null, 'cpf' => null, 'email' => null, 'password' => null]],
         ];
+    }
+
+    private function route(array $payload): TestResponse
+    {
+        return $this->postJson(route('customer.auth.register'), $payload);
     }
 }

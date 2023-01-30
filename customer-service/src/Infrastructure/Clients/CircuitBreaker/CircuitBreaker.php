@@ -1,12 +1,10 @@
 <?php
 
-namespace Src\Infrastructure\Clients\Http\CircuitBreaker;
+namespace Src\Infrastructure\Clients\CircuitBreaker;
 
 use Exception;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
-use Src\Infrastructure\Clients\CircuitBreaker\Config;
-use Src\Infrastructure\Clients\CircuitBreaker\Key;
 
 class CircuitBreaker
 {

@@ -11,6 +11,7 @@ use Src\Auth\Application\RegisterCustomer;
 use Src\Auth\Domain\Exceptions\CustomerValidationException as CustomerAuthValidationException;
 use Src\Auth\Domain\Exceptions\InvalidTokenException;
 use Src\Customer\Domain\Exceptions\CustomerRepositoryException;
+use Src\Customer\Domain\InvalidParameterException;
 use Src\Customer\Presentation\Rest\Requests\LoginRequest;
 use Src\Customer\Presentation\Rest\Requests\RegisterRequest;
 use Src\Customer\Presentation\Rest\ViewModels\Auth\LoginViewModel;
@@ -25,7 +26,7 @@ class AuthController extends Controller
     {
         try {
             $payload = RegisterViewModel::fromRequest($request);
-        } catch (CustomerAuthValidationException $e) {
+        } catch (CustomerAuthValidationException|InvalidParameterException $e) {
             return $response->json(['error' => $e->getMessage()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 

@@ -2,11 +2,12 @@
 
 namespace Src\Transaction\Application;
 
+use GuzzleHttp\Exception\GuzzleException;
 use Src\Customer\Domain\Entities\Customer;
-use Src\Infrastructure\Clients\Http\Exceptions\InvalidURLException;
-use Src\Infrastructure\Clients\Http\Exceptions\RequestException;
-use Src\Infrastructure\Clients\Http\Exceptions\ResponseException;
+use Src\Infrastructure\Clients\Http\Exceptions\ExternalServiceException;
 use Src\Infrastructure\Clients\Http\TransactionsService\Endpoint;
+use Src\Infrastructure\Clients\Http\TransactionsService\Exceptions\ClientException;
+use Src\Infrastructure\Clients\Http\TransactionsService\Exceptions\ResourceNotFoundException;
 use Src\Infrastructure\Clients\Http\TransactionsService\Payloads\RegisterCustomerPayload;
 use Src\Infrastructure\Clients\Http\TransactionsService\TransactionsServiceClient;
 
@@ -17,9 +18,10 @@ class RegisterCustomer
     }
 
     /**
-     * @throws RequestException
-     * @throws ResponseException
-     * @throws InvalidURLException
+     * @throws GuzzleException
+     * @throws ExternalServiceException
+     * @throws ResourceNotFoundException
+     * @throws ClientException
      */
     public function intoTransactionsService(Customer $customer): void
     {
