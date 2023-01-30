@@ -3,6 +3,9 @@
 namespace Src\Transactions\Application;
 
 use Illuminate\Support\Facades\DB;
+use Src\Infrastructure\Events\Application\StoreEvent;
+use Src\Infrastructure\Events\ValueObjects\EventType;
+use Src\Infrastructure\Events\ValueObjects\Payloads\TransactionStoredPayload;
 use Src\Ledger\Application\BalanceChecker;
 use Src\Ledger\Application\LedgerLocker;
 use Src\Transactionables\Application\GetTransactionable;
@@ -23,6 +26,7 @@ class StoreTransaction
         private readonly LedgerLocker $locker,
         private readonly BalanceChecker $balanceChecker,
         private readonly GetTransactionable $getTransactionable,
+        private readonly StoreEvent $storeEvent,
     ) {
     }
 
@@ -60,7 +64,14 @@ class StoreTransaction
 
             $dto = new StoreTransactionDTO($sender, $receiver, $payload->amount);
 
-            return $this->transactionRepository->store($dto);
+            $transaction = $this->transactionRepository->store($dto);
+
+            $this->storeEvent->store(
+                EventType::TRANSACTION_STORED,
+                new TransactionStoredPayload($transaction->id)
+            );
+
+            return $transaction;
         });
 
         return $transaction;
